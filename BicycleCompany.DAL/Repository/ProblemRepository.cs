@@ -3,6 +3,7 @@ using BicycleCompany.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
@@ -23,6 +24,8 @@ namespace BicycleCompany.DAL.Repository
             await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
         public async Task<IEnumerable<Problem>> GetProblemsAsync(bool trackChanges) =>
-            await FindAll(trackChanges).ToListAsync();
+            await FindAll(trackChanges)
+            .OrderBy(p => p.Stage)
+            .ToListAsync();
     }
 }

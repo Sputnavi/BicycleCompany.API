@@ -2,7 +2,7 @@
 
 namespace BicycleCompany.DAL.Repository
 {
-    public class RepositoryManager : IReposirotyManager
+    public class RepositoryManager : IRepositoryManager
     {
         public RepositoryManager(RepositoryContext repositoryContext)
         {

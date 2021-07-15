@@ -2,7 +2,7 @@
 
 namespace BicycleCompany.DAL.Contracts
 {
-    public interface IReposirotyManager
+    public interface IRepositoryManager
     {
         IBicycleRepository Bicycle { get; }
         IClientRepository Client { get; }
