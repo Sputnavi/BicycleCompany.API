@@ -1,11 +1,11 @@
-using BicycleCompany.BAL.Extensions;
+using BicycleCompany.BLL.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace BicycleCompany.BAL
+namespace BicycleCompany.BLL
 {
     public class Startup
     {

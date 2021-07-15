@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BicycleCompany.BAL.Extensions
+namespace BicycleCompany.BLL.Extensions
 {
     public static class ServiceExtensions
     {
