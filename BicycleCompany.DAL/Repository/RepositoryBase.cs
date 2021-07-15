@@ -26,8 +26,21 @@ namespace BicycleCompany.DAL.Repository
                 repositoryContext.Set<T>().Where(expression) :
                 repositoryContext.Set<T>().Where(expression).AsNoTracking();
 
-        public void Create(T entity) => repositoryContext.Set<T>().Add(entity);
-        public void Update(T entity) => repositoryContext.Set<T>().Update(entity);
-        public void Delete(T entity) => repositoryContext.Set<T>().Remove(entity);
+        public void Create(T entity)
+        {
+            repositoryContext.Set<T>().Add(entity);
+            repositoryContext.SaveChanges();
+        }
+
+        public void Update(T entity)
+        {
+            repositoryContext.Set<T>().Update(entity);
+            repositoryContext.SaveChanges();
+        }
+
+        public void Delete(T entity) {
+            repositoryContext.Set<T>().Remove(entity);
+            repositoryContext.SaveChanges();
+        }
     }
 }
