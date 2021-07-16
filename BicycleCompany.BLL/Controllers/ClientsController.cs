@@ -34,10 +34,10 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <response code="200">List of clients returned successfully</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpGet]
-        [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet]
+        [HttpHead]
         public async Task<IActionResult> GetClients()
         {
             var clients = await _repository.Client.GetClientsAsync(trackChanges: false);
@@ -53,10 +53,10 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="200">Client returned successfully</response> 
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpGet("{id}", Name = "GetClient")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{id}", Name = "GetClient")]
         public async Task<IActionResult> GetClient(Guid id)
         {
             var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: false);
@@ -77,10 +77,11 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="201">Client created successfully</response> 
         /// <response code="422">Client model is invalid</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateClient([FromBody] ClientForCreationModel client)
         {
             var clientEntity = _mapper.Map<Client>(client);
@@ -99,10 +100,10 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="204">Client deleted successfully</response>
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(Guid id)
         {
             var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: false);
@@ -126,11 +127,11 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="422">Client model is invalid</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForUpdateModel client)
         {
@@ -156,11 +157,11 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="422">Client model is invalid</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> PartiallyUpdateClient(Guid id, 
             [FromBody] JsonPatchDocument<ClientForUpdateModel> patchDoc)
         {
