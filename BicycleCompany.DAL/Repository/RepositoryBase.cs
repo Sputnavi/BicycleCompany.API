@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
 {
@@ -26,21 +27,21 @@ namespace BicycleCompany.DAL.Repository
                 repositoryContext.Set<T>().Where(expression) :
                 repositoryContext.Set<T>().Where(expression).AsNoTracking();
 
-        public void Create(T entity)
+        public Task CreateAsync(T entity)
         {
             repositoryContext.Set<T>().Add(entity);
-            repositoryContext.SaveChanges();
+            return repositoryContext.SaveChangesAsync();
         }
 
-        public void Update(T entity)
+        public Task UpdateAsync(T entity)
         {
             repositoryContext.Set<T>().Update(entity);
-            repositoryContext.SaveChanges();
+            return repositoryContext.SaveChangesAsync();
         }
 
-        public void Delete(T entity) {
+        public Task DeleteAsync(T entity) {
             repositoryContext.Set<T>().Remove(entity);
-            repositoryContext.SaveChanges();
+            return repositoryContext .SaveChangesAsync();
         }
     }
 }

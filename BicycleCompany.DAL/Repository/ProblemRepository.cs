@@ -16,9 +16,9 @@ namespace BicycleCompany.DAL.Repository
 
         }
 
-        public void CreateProblem(Problem problem) => Create(problem);
+        public Task CreateProblemAsync(Problem problem) => CreateAsync(problem);
 
-        public void DeleteProblem(Problem problem) => Delete(problem);
+        public Task DeleteProblemAsync(Problem problem) => DeleteAsync(problem);
 
         public async Task<Problem> GetProblemAsync(Guid id, bool trackChanges) => 
             await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();

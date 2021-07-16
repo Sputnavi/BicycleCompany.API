@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL.Contracts
     {
         Task<IEnumerable<Part>> GetPartsAsync(bool trackChanges);
         Task<Part> GetPartAsync(Guid id, bool trackChanges);
-        void CreatePart(Part part);
-        void DeletePart(Part part);
+        Task CreatePartAsync(Part part);
+        Task DeletePartAsync(Part part);
     }
 }

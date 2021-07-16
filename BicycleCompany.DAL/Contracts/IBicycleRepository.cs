@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL.Contracts
     {
         Task<IEnumerable<Bicycle>> GetBicyclesAsync(bool trackChanges);
         Task<Bicycle> GetBicycleAsync(Guid id, bool trackChanges);
-        void CreateBicycle(Bicycle bicycle);
-        void DeleteBicycle(Bicycle bicycle);
+        Task CreateBicycleAsync(Bicycle bicycle);
+        Task DeleteBicycleAsync(Bicycle bicycle);
     }
 }

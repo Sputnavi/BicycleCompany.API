@@ -16,9 +16,9 @@ namespace BicycleCompany.DAL.Repository
 
         }
 
-        public void CreateBicycle(Bicycle bicycle) => Create(bicycle);
+        public Task CreateBicycleAsync(Bicycle bicycle) => CreateAsync(bicycle);
 
-        public void DeleteBicycle(Bicycle bicycle) => Delete(bicycle);
+        public Task DeleteBicycleAsync(Bicycle bicycle) => DeleteAsync(bicycle);
 
         public async Task<Bicycle> GetBicycleAsync(Guid id, bool trackChanges) => 
             await FindByCondition(b => b.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
