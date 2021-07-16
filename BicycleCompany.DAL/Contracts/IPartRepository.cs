@@ -11,5 +11,6 @@ namespace BicycleCompany.DAL.Contracts
         Task<Part> GetPartAsync(Guid id, bool trackChanges);
         Task CreatePartAsync(Part part);
         Task DeletePartAsync(Part part);
+        Task UpdatePartAsync(Part part);
     }
 }

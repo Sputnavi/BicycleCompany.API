@@ -7,9 +7,6 @@ namespace BicycleCompany.DAL.Contracts
         IBicycleRepository Bicycle { get; }
         IClientRepository Client { get; }
         IPartRepository Part { get; }
-        IProblemRepository Problem { get; }
-
-        //TODO: ask Anya
-        //Task SaveAsync(); 
+        IProblemRepository Problem { get; } 
     }
 }

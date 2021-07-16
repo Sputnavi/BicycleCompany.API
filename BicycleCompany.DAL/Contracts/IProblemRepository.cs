@@ -11,5 +11,6 @@ namespace BicycleCompany.DAL.Contracts
         Task<Problem> GetProblemAsync(Guid id, bool trackChanges);
         Task CreateProblemAsync(Problem problem);
         Task DeleteProblemAsync(Problem problem);
+        Task UpdateProblemAsync(Problem problem);
     }
 }

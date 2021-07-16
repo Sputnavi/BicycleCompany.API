@@ -11,5 +11,6 @@ namespace BicycleCompany.DAL.Contracts
         Task<Client> GetClientAsync(Guid id, bool trackChanges);
         Task CreateClientAsync(Client client);
         Task DeleteClientAsync(Client client);
+        Task UpdateClientAsync(Client client);
     }
 }

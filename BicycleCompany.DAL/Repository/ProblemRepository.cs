@@ -20,6 +20,8 @@ namespace BicycleCompany.DAL.Repository
 
         public Task DeleteProblemAsync(Problem problem) => DeleteAsync(problem);
 
+        public Task UpdateProblemAsync(Problem problem) => UpdateAsync(problem);
+
         public async Task<Problem> GetProblemAsync(Guid id, bool trackChanges) => 
             await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
