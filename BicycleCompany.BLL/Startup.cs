@@ -1,9 +1,15 @@
+using BicycleCompany.BLL.ActionFilters;
 using BicycleCompany.BLL.Extensions;
+using BicycleCompany.DAL.Contracts;
+using BicycleCompany.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NLog;
+using System.IO;
 
 namespace BicycleCompany.BLL
 {
@@ -11,6 +17,7 @@ namespace BicycleCompany.BLL
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -19,7 +26,21 @@ namespace BicycleCompany.BLL
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureSqlContext(Configuration);
+            services.ConfigureLoggerService();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
+            services.AddScoped<ValidationFilterAttribute>();
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             services.AddRazorPages();
+            services.AddControllers()
+                .AddNewtonsoftJson();
+            services.ConfigureSwagger();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -27,6 +48,8 @@ namespace BicycleCompany.BLL
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BicycleCompany v1"));
             }
             else
             {
@@ -44,7 +67,9 @@ namespace BicycleCompany.BLL
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=index}/{id?}");
             });
         }
     }
