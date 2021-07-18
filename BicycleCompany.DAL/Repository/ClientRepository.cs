@@ -20,6 +20,8 @@ namespace BicycleCompany.DAL.Repository
 
         public Task DeleteClientAsync(Client client) => DeleteAsync(client);
 
+        public Task UpdateClientAsync(Client client) => UpdateAsync(client);
+
         public async Task<Client> GetClientAsync(Guid id, bool trackChanges) => 
             await FindByCondition(c => c.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 

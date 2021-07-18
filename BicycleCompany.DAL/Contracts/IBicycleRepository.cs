@@ -11,5 +11,6 @@ namespace BicycleCompany.DAL.Contracts
         Task<Bicycle> GetBicycleAsync(Guid id, bool trackChanges);
         Task CreateBicycleAsync(Bicycle bicycle);
         Task DeleteBicycleAsync(Bicycle bicycle);
+        Task UpdateBicycleAsync(Bicycle bicycle);
     }
 }

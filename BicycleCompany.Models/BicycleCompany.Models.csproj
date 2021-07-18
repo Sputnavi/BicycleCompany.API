@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Request\" />
-    <Folder Include="Response\" />
+    <ProjectReference Include="..\BicycleCompany.DAL\BicycleCompany.DAL.csproj" />
   </ItemGroup>
 
 </Project>

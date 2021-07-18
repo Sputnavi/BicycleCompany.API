@@ -20,6 +20,8 @@ namespace BicycleCompany.DAL.Repository
 
         public Task DeletePartAsync(Part part) => DeleteAsync(part);
 
+        public Task UpdatePartAsync(Part part) => UpdateAsync(part);
+
         public async Task<Part> GetPartAsync(Guid id, bool trackChanges) => 
             await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
