@@ -82,7 +82,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> CreateClient([FromBody] ClientForCreationModel client)
+        public async Task<IActionResult> CreateClient([FromBody] ClientForCreateOrUpdateModel client)
         {
             var clientEntity = _mapper.Map<Client>(client);
 
@@ -133,7 +133,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForUpdateModel client)
+        public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForCreateOrUpdateModel client)
         {
             var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: true);
             if (clientEntity is null)
@@ -163,7 +163,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPatch("{id}")]
         public async Task<IActionResult> PartiallyUpdateClient(Guid id, 
-            [FromBody] JsonPatchDocument<ClientForUpdateModel> patchDoc)
+            [FromBody] JsonPatchDocument<ClientForCreateOrUpdateModel> patchDoc)
         {
             if (patchDoc is null)
             {
@@ -172,7 +172,7 @@ namespace BicycleCompany.BLL.Controllers
             }
 
             var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: true);
-            var clientToPatch = _mapper.Map<ClientForUpdateModel>(clientEntity);
+            var clientToPatch = _mapper.Map<ClientForCreateOrUpdateModel>(clientEntity);
 
             patchDoc.ApplyTo(clientToPatch, ModelState);
 

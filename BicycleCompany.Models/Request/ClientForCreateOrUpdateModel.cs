@@ -1,18 +1,15 @@
 ﻿using BicycleCompany.DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BicycleCompany.Models.Request
 {
-    public class BicycleForCreationModel
+    public class ClientForCreateOrUpdateModel
     {
         [Required]
-        [MaxLength(30)]
+        [MaxLength(150)]
         public string Name { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Model { get; set; }
 
         public List<Problem> Problems { get; set; }
     }

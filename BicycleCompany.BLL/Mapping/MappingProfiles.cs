@@ -10,12 +10,10 @@ namespace BicycleCompany.BLL.Mapping
         public MappingProfiles()
         {
             CreateMap<Client, ClientForReadModel>();
-            CreateMap<ClientForCreationModel, Client>();
-            CreateMap<ClientForUpdateModel, Client>().ReverseMap();
+            CreateMap<ClientForCreateOrUpdateModel, Client>().ReverseMap();
 
             CreateMap<Bicycle, BicycleForReadModel>();
-            CreateMap<BicycleForCreationModel, Bicycle>();
-            CreateMap<BicycleForUpdateModel, Bicycle>().ReverseMap();
+            CreateMap<BicycleForCreateOrUpdateModel, Bicycle>().ReverseMap();
         }
     }
 }
