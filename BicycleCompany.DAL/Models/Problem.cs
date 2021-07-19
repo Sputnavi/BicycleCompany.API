@@ -18,13 +18,15 @@ namespace BicycleCompany.DAL.Models
         public Bicycle Bicycle { get; set; }
 
         [Required]
+        public DateTime Date { get; set; }
+
+        [Required]
         [MaxLength(200)]
         public string Place { get; set; }
 
-        // Default Value "Received" Configured in Migration
         [Required]
         [MaxLength(20)]
-        public string Stage { get; set; }
+        public Stage Stage { get; set; }
 
         [MaxLength(250)]
         public string Description { get; set; }

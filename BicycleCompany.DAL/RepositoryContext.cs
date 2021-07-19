@@ -66,7 +66,8 @@ namespace BicycleCompany.DAL
                     ClientId = clientId,
                     BicycleId = bicycleId,
                     Place = "Outside the city",
-                    Stage = "Received",
+                    Stage = Stage.Received,
+                    Date = DateTime.Today,
                     Description = "The seat was broken in half"
                 }
             );
@@ -77,16 +78,19 @@ namespace BicycleCompany.DAL
                 {
                     Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE5B"),
                     Name = "Seat",
+                    Amount = 5
                 },
                 new Part
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Wheel"
+                    Name = "Wheel",
+                    Amount = 7
                 },
                 new Part
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Handlebar"
+                    Name = "Handlebar",
+                    Amount = 3
                 }
             );
         }

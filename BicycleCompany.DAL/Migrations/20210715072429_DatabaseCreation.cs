@@ -52,7 +52,7 @@ namespace BicycleCompany.DAL.Migrations
                     ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BicycleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Place = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Stage = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Received"),
+                    Stage = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
