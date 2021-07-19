@@ -40,7 +40,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpHead]
         public async Task<IActionResult> GetClients()
         {
-            var clients = await _repository.Client.GetClientsAsync(trackChanges: false);
+            var clients = await _repository.Client.GetClientsAsync();
             var clientsModel = _mapper.Map<IEnumerable<ClientForReadModel>>(clients);
 
             return Ok(clientsModel);
@@ -59,7 +59,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpGet("{id}", Name = "GetClient")]
         public async Task<IActionResult> GetClient(Guid id)
         {
-            var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: false);
+            var clientEntity = await _repository.Client.GetClientAsync(id);
             if (clientEntity is null)
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
@@ -106,7 +106,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(Guid id)
         {
-            var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: false);
+            var clientEntity = await _repository.Client.GetClientAsync(id);
             if (clientEntity is null)
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
@@ -135,7 +135,7 @@ namespace BicycleCompany.BLL.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForCreateOrUpdateModel client)
         {
-            var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: true);
+            var clientEntity = await _repository.Client.GetClientAsync(id);
             if (clientEntity is null)
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
@@ -171,7 +171,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var clientEntity = await _repository.Client.GetClientAsync(id, trackChanges: true);
+            var clientEntity = await _repository.Client.GetClientAsync(id);
             var clientToPatch = _mapper.Map<ClientForCreateOrUpdateModel>(clientEntity);
 
             patchDoc.ApplyTo(clientToPatch, ModelState);

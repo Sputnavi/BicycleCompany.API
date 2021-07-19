@@ -22,11 +22,11 @@ namespace BicycleCompany.DAL.Repository
 
         public Task UpdateBicycleAsync(Bicycle bicycle) => UpdateAsync(bicycle);
 
-        public async Task<Bicycle> GetBicycleAsync(Guid id, bool trackChanges) => 
-            await FindByCondition(b => b.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
+        public async Task<Bicycle> GetBicycleAsync(Guid id) => 
+            await FindByCondition(b => b.Id.Equals(id)).SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Bicycle>> GetBicyclesAsync(bool trackChanges) => 
-            await FindAll(trackChanges)
+        public async Task<IEnumerable<Bicycle>> GetBicyclesAsync() => 
+            await FindAll()
             .OrderBy(b => b.Name)
             .ToListAsync();
     }

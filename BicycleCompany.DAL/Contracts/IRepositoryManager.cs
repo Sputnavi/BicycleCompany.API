@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace BicycleCompany.DAL.Contracts
+﻿namespace BicycleCompany.DAL.Contracts
 {
     public interface IRepositoryManager
     {

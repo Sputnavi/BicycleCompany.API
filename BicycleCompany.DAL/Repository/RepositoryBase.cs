@@ -17,15 +17,10 @@ namespace BicycleCompany.DAL.Repository
         }
 
 
-        public IQueryable<T> FindAll(bool trackChanges) => 
-            trackChanges ?
-                repositoryContext.Set<T>() :
-                repositoryContext.Set<T>().AsNoTracking();
+        public IQueryable<T> FindAll() => repositoryContext.Set<T>().AsNoTracking();
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges) => 
-            trackChanges ?
-                repositoryContext.Set<T>().Where(expression) :
-                repositoryContext.Set<T>().Where(expression).AsNoTracking();
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => 
+            repositoryContext.Set<T>().Where(expression).AsNoTracking();
 
         public Task CreateAsync(T entity)
         {

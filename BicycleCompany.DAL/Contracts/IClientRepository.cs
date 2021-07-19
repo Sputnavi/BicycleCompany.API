@@ -7,8 +7,8 @@ namespace BicycleCompany.DAL.Contracts
 {
     public interface IClientRepository
     {
-        Task<IEnumerable<Client>> GetClientsAsync(bool trackChanges);
-        Task<Client> GetClientAsync(Guid id, bool trackChanges);
+        Task<IEnumerable<Client>> GetClientsAsync();
+        Task<Client> GetClientAsync(Guid id);
         Task CreateClientAsync(Client client);
         Task DeleteClientAsync(Client client);
         Task UpdateClientAsync(Client client);
