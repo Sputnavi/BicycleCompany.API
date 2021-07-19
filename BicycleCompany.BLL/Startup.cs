@@ -32,11 +32,6 @@ namespace BicycleCompany.BLL
             services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddScoped<ValidationFilterAttribute>();
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
             services.AddRazorPages();
             services.AddControllers()
                 .AddNewtonsoftJson();

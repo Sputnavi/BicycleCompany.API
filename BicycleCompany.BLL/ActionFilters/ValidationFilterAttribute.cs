@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace BicycleCompany.BLL.ActionFilters
 {
+    /// <summary>
+    /// A filter that validates object's model and specifies status code returned by action.
+    /// </summary>
     public class ValidationFilterAttribute : IActionFilter
     {
         private readonly ILoggerManager _logger;
@@ -34,7 +37,7 @@ namespace BicycleCompany.BLL.ActionFilters
             if (!context.ModelState.IsValid)
             {
                 _logger.LogInfo($"Invalid model state for the object. Controller: {controller}, action: {action}");
-                context.Result = new UnprocessableEntityObjectResult(context.ModelState);
+                context.Result = new BadRequestObjectResult(context.ModelState);
             }
         }
     }

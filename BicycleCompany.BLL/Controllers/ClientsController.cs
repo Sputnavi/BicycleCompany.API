@@ -63,7 +63,7 @@ namespace BicycleCompany.BLL.Controllers
             if (clientEntity is null)
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound();
+                return NotFound("Client with provided id cannot be found!");
             }
 
             var clientModel = _mapper.Map<ClientForReadModel>(clientEntity);
@@ -75,10 +75,10 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="client">The client object for creation</param>
         /// <response code="201">Client created successfully</response> 
-        /// <response code="422">Client model is invalid</response>
+        /// <response code="400">Client model is invalid</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -110,7 +110,7 @@ namespace BicycleCompany.BLL.Controllers
             if (clientEntity is null)
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound();
+                return NotFound("Client with provided id cannot be found!");
             }
 
             await _repository.Client.DeleteClientAsync(clientEntity);
@@ -124,12 +124,12 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="id">The value that is used to find client</param>
         /// <param name="client">The client object which is used for update client with provided id</param>
         /// <response code="204">Client deleted successfully</response>
+        /// <response code="400">Client model is invalid</response>
         /// <response code="404">Client with provided id cannot be found!</response>
-        /// <response code="422">Client model is invalid</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -139,7 +139,7 @@ namespace BicycleCompany.BLL.Controllers
             if (clientEntity is null)
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound();
+                return NotFound("Client with provided id cannot be found!");
             }
 
             _mapper.Map(client, clientEntity);
@@ -154,12 +154,12 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="id">The value that is used to find client</param>
         /// <param name="patchDoc">The document with an array of operations for client with provided id</param>
         /// <response code="204">Client deleted successfully</response>
+        /// <response code="400">Client model is invalid</response>
         /// <response code="404">Client with provided id cannot be found!</response>
-        /// <response code="422">Client model is invalid</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPatch("{id}")]
         public async Task<IActionResult> PartiallyUpdateClient(Guid id, 

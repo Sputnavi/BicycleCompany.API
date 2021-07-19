@@ -63,7 +63,7 @@ namespace BicycleCompany.BLL.Controllers
             if (bicycleEntity is null)
             {
                 _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                return NotFound();
+                return NotFound("Bicycle with provided id cannot be found!");
             }
 
             var bicycleModel = _mapper.Map<BicycleForReadModel>(bicycleEntity);
@@ -75,20 +75,20 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="bicycle">The Bicycle object for creation</param>
         /// <response code="201">Bicycle created successfully</response> 
-        /// <response code="422">Bicycle model is invalid</response>
+        /// <response code="400">Bicycle model is invalid</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateBicycle([FromBody] BicycleForCreationModel bicycle)
         {
-            var bicycleEntiy = _mapper.Map<Bicycle>(bicycle);
+            var bicycleEntity = _mapper.Map<Bicycle>(bicycle);
 
-            await _repository.Bicycle.CreateBicycleAsync(bicycleEntiy);
+            await _repository.Bicycle.CreateBicycleAsync(bicycleEntity);
 
-            var bicycleToReturn = _mapper.Map<BicycleForReadModel>(bicycleEntiy);
+            var bicycleToReturn = _mapper.Map<BicycleForReadModel>(bicycleEntity);
 
             return CreatedAtRoute("GetBicycle", new { id = bicycleToReturn.Id }, bicycleToReturn);
         }
@@ -110,7 +110,7 @@ namespace BicycleCompany.BLL.Controllers
             if (bicycleEntity is null)
             {
                 _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                return NotFound();
+                return NotFound("Bicycle with provided id cannot be found!");
             }
 
             await _repository.Bicycle.DeleteBicycleAsync(bicycleEntity);
@@ -124,12 +124,12 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="id">The value that is used to find Bicycle</param>
         /// <param name="bicycle">The Bicycle object which is used for update Bicycle with provided id</param>
         /// <response code="204">Bicycle deleted successfully</response>
+        /// <response code="400">Bicycle model is invalid</response>
         /// <response code="404">Bicycle with provided id cannot be found!</response>
-        /// <response code="422">Bicycle model is invalid</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -139,7 +139,7 @@ namespace BicycleCompany.BLL.Controllers
             if (bicycleEntity is null)
             {
                 _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                return NotFound();
+                return NotFound("Bicycle with provided id cannot be found!");
             }
             
             _mapper.Map(bicycle, bicycleEntity);
@@ -154,14 +154,13 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="id">The value that is used to find Bicycle</param>
         /// <param name="patchDoc">The document with an array of operations for Bicycle with provided id</param>
         /// <response code="204">Bicycle deleted successfully</response>
+        /// <response code="400">Bicycle model is invalid</response>
         /// <response code="404">Bicycle with provided id cannot be found!</response>
-        /// <response code="422">Bicycle model is invalid</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
         [HttpPatch("{id}")]
         public async Task<IActionResult> PartiallyUpdateBicycle(Guid id,
             [FromBody] JsonPatchDocument<BicycleForUpdateModel> patchDoc)
@@ -181,7 +180,7 @@ namespace BicycleCompany.BLL.Controllers
 
             if (!ModelState.IsValid)
             {
-                return UnprocessableEntity(ModelState);
+                return BadRequest(ModelState);
             }
 
             _mapper.Map(bicycleToPatch, bicycleEntity);
