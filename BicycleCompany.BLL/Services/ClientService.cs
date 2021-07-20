@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Services
 {
+    /// <summary>
+    /// Service to manage clients.
+    /// </summary>
     public class ClientService : IClientService
     {
         private readonly IMapper _mapper;

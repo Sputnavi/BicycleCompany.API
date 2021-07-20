@@ -9,11 +9,9 @@ namespace BicycleCompany.DAL.Models
     {
         public Guid Id { get; set; }
 
-        [ForeignKey(nameof(Client))]
         public Guid ClientId { get; set; }
         public Client Client { get; set; }
 
-        [ForeignKey(nameof(Bicycle))]
         public Guid BicycleId { get; set; }
         public Bicycle Bicycle { get; set; }
 
@@ -32,5 +30,6 @@ namespace BicycleCompany.DAL.Models
         public string Description { get; set; }
 
         public List<Part> Parts { get; set; }
+        public List<PartProblem> PartProblems { get; set; }
     }
 }

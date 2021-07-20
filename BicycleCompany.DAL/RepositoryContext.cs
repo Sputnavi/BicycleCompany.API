@@ -19,6 +19,21 @@ namespace BicycleCompany.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<Part>()
+                .HasMany(p => p.Problems)
+                .WithMany(pr => pr.Parts)
+                .UsingEntity<PartProblem>(
+                    j => j
+                    .HasOne(k => k.Problem)
+                    .WithMany(t => t.PartProblems)
+                    .HasForeignKey(k => k.ProblemId),
+                    j => j
+                    .HasOne(k => k.Part)
+                    .WithMany(s => s.PartProblems)
+                    .HasForeignKey(k => k.PartId)
+                );
+
             Guid clientId = new Guid("3B4E22BE-C10D-4303-BF57-03ECA2F13F2B");
             Guid bicycleId = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD6");
 
