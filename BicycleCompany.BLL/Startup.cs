@@ -1,5 +1,6 @@
 using BicycleCompany.BLL.ActionFilters;
 using BicycleCompany.BLL.Extensions;
+using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +30,9 @@ namespace BicycleCompany.BLL
             services.ConfigureLoggerService();
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
+            services.RegisterRepositories();
+            services.RegisterServices();
+
             services.AddScoped<ValidationFilterAttribute>();
 
             services.AddRazorPages();
@@ -38,7 +41,7 @@ namespace BicycleCompany.BLL
             services.ConfigureSwagger();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -46,12 +49,8 @@ namespace BicycleCompany.BLL
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BicycleCompany v1"));
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
+            app.ConfigureExceptionHandler(logger);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

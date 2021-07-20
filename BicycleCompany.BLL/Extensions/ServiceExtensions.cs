@@ -1,6 +1,8 @@
 ﻿using BicycleCompany.BLL.Services;
 using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.DAL;
+using BicycleCompany.DAL.Contracts;
+using BicycleCompany.DAL.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,16 @@ namespace BicycleCompany.BLL.Extensions
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddScoped<ILoggerManager, LoggerManager>();
+
+        public static void RegisterRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IBicycleRepository, BicycleRepository>();
+        }
+
+        public static void RegisterServices(this IServiceCollection services)
+        {
+            services.AddScoped<IBicycleService, BicycleService>();
+        }
 
         public static void ConfigureSwagger(this IServiceCollection services) =>
             services.AddSwaggerGen(c =>
