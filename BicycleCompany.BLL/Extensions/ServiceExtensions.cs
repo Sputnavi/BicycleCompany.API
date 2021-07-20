@@ -25,11 +25,13 @@ namespace BicycleCompany.BLL.Extensions
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IBicycleRepository, BicycleRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
         }
 
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddScoped<IBicycleService, BicycleService>();
+            services.AddScoped<IClientService, ClientService>();
         }
 
         public static void ConfigureSwagger(this IServiceCollection services) =>

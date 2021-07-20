@@ -157,6 +157,11 @@ namespace BicycleCompany.BLL.Controllers
             }
 
             var bicycleEntity = await _bicycleService.GetBicycleAsync(id);
+            if (bicycleEntity is null)
+            {
+                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
+                return NotFound("Client with provided id cannot be found!");
+            }
             var bicycleToPatch = _mapper.Map<BicycleForCreateOrUpdateModel>(bicycleEntity);
 
             patchDoc.ApplyTo(bicycleToPatch, ModelState);
