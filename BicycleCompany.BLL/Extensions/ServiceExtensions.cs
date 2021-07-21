@@ -26,12 +26,14 @@ namespace BicycleCompany.BLL.Extensions
         {
             services.AddScoped<IBicycleRepository, BicycleRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IPartRepository, PartRepository>();
         }
 
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddScoped<IBicycleService, BicycleService>();
             services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IPartService, PartService>();
         }
 
         public static void ConfigureSwagger(this IServiceCollection services) =>

@@ -16,6 +16,10 @@ namespace BicycleCompany.BLL.Mapping
             CreateMap<Bicycle, BicycleForReadModel>();
             CreateMap<BicycleForCreateOrUpdateModel, Bicycle>().ReverseMap();
             CreateMap<BicycleForReadModel, BicycleForCreateOrUpdateModel>();
+
+            CreateMap<Part, PartForReadModel>();
+            CreateMap<PartForCreateOrUpdateModel, Part>().ReverseMap();
+            CreateMap<PartForReadModel, PartForCreateOrUpdateModel>();
         }
     }
 }
