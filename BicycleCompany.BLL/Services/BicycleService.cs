@@ -4,8 +4,6 @@ using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Response;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,14 +17,16 @@ namespace BicycleCompany.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IBicycleRepository _bicycleRepository;
+        private readonly ILoggerManager _logger;
 
-        public BicycleService(IMapper mapper, IBicycleRepository bicycleRepository)
+        public BicycleService(IMapper mapper, IBicycleRepository bicycleRepository, ILoggerManager logger)
         {
             _mapper = mapper;
             _bicycleRepository = bicycleRepository;
+            _logger = logger;
         }
 
-        public async Task<List<BicycleForReadModel>> GetBicyclesListAsync()
+        public async Task<List<BicycleForReadModel>> GetBicycleListAsync()
         {
             var bicycles = await _bicycleRepository.GetBicyclesAsync();
             return _mapper.Map<List<BicycleForReadModel>>(bicycles);
@@ -35,39 +35,53 @@ namespace BicycleCompany.BLL.Services
         public async Task<BicycleForReadModel> GetBicycleAsync(Guid id)
         {
             var bicycle = await _bicycleRepository.GetBicycleAsync(id);
+            if (bicycle is null)
+            {
+                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Bicycle with id: {id} cannot be found!");
+            }
             return _mapper.Map<BicycleForReadModel>(bicycle);
         }
 
-        public async Task<BicycleForReadModel> CreateBicycleAsync(BicycleForCreateOrUpdateModel model)
+        public async Task<Guid> CreateBicycleAsync(BicycleForCreateOrUpdateModel model)
         {
             var bicycleEntity = _mapper.Map<Bicycle>(model);
 
             await _bicycleRepository.CreateBicycleAsync(bicycleEntity);
 
-            return _mapper.Map<BicycleForReadModel>(bicycleEntity);
+            return bicycleEntity.Id;
         }
 
-        public async Task<Bicycle> DeleteBicycleAsync(Guid id)
+        public async Task DeleteBicycleAsync(Guid id)
         {
             var bicycleEntity = await _bicycleRepository.GetBicycleAsync(id);
-            if (bicycleEntity != null)
+            if (bicycleEntity is null)
             {
-                await _bicycleRepository.DeleteBicycleAsync(bicycleEntity);
+                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Bicycle with id: {id} cannot be found!");
             }
 
-            return bicycleEntity;
+            await _bicycleRepository.DeleteBicycleAsync(bicycleEntity);
         }
 
-        public async Task<Bicycle> UpdateBicycleAsync(Guid id, BicycleForCreateOrUpdateModel model)
+        public async Task UpdateBicycleAsync(Guid id, BicycleForCreateOrUpdateModel model)
         {
             var bicycleEntity = await _bicycleRepository.GetBicycleAsync(id);
-            if (bicycleEntity != null)
+            if (bicycleEntity is null)
             {
-                _mapper.Map(model, bicycleEntity);
-                await _bicycleRepository.UpdateBicycleAsync(bicycleEntity); 
+                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Bicycle with id: {id} cannot be found!");
             }
 
-            return bicycleEntity;
+            _mapper.Map(model, bicycleEntity);
+            await _bicycleRepository.UpdateBicycleAsync(bicycleEntity);
+        }
+
+        public async Task<BicycleForCreateOrUpdateModel> GetBicycleForUpdateModelAsync(Guid id)
+        {
+            var bicycleEntity = await GetBicycleAsync(id);
+
+            return _mapper.Map<BicycleForCreateOrUpdateModel>(bicycleEntity);
         }
     }
 }

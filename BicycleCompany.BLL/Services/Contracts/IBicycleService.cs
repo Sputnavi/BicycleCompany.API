@@ -1,5 +1,4 @@
-﻿using BicycleCompany.DAL.Models;
-using BicycleCompany.Models.Request;
+﻿using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Response;
 using System;
 using System.Collections.Generic;
@@ -9,10 +8,11 @@ namespace BicycleCompany.BLL.Services.Contracts
 {
     public interface IBicycleService
     {
-        Task<List<BicycleForReadModel>> GetBicyclesListAsync();
+        Task<List<BicycleForReadModel>> GetBicycleListAsync();
         Task<BicycleForReadModel> GetBicycleAsync(Guid id);
-        Task<BicycleForReadModel> CreateBicycleAsync(BicycleForCreateOrUpdateModel model);
-        Task<Bicycle> UpdateBicycleAsync(Guid id, BicycleForCreateOrUpdateModel model);
-        Task<Bicycle> DeleteBicycleAsync(Guid id);
+        Task<Guid> CreateBicycleAsync(BicycleForCreateOrUpdateModel model);
+        Task UpdateBicycleAsync(Guid id, BicycleForCreateOrUpdateModel model);
+        Task DeleteBicycleAsync(Guid id);
+        Task<BicycleForCreateOrUpdateModel> GetBicycleForUpdateModelAsync(Guid id);
     }
 }

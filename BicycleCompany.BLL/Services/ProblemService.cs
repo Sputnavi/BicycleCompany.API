@@ -22,64 +22,86 @@ namespace BicycleCompany.BLL.Services
         private readonly IBicycleRepository _bicycleRepository;
         private readonly IPartProblemRepository _partProblemRepository;
         private readonly ILoggerManager _logger;
+        private readonly IClientService _clientService;
 
-        public ProblemService(IMapper mapper, IProblemRepository problemRepository, IBicycleRepository bicycleRepository, ILoggerManager logger, IPartProblemRepository partProblemRepository)
+        public ProblemService(IMapper mapper, IProblemRepository problemRepository, IBicycleRepository bicycleRepository, ILoggerManager logger, IPartProblemRepository partProblemRepository, IClientService clientService)
         {
             _mapper = mapper;
             _problemRepository = problemRepository;
             _bicycleRepository = bicycleRepository;
             _logger = logger;
             _partProblemRepository = partProblemRepository;
+            _clientService = clientService;
         }
 
-        public async Task<List<ProblemForReadModel>> GetProblemsListAsync(Guid clientId)
+        public async Task<List<ProblemForReadModel>> GetProblemListAsync(Guid clientId)
         {
+            await _clientService.GetClientAsync(clientId);
+
             var problems = await _problemRepository.GetProblemsAsync(clientId);
+
             return _mapper.Map<IEnumerable<Problem>, List<ProblemForReadModel>>(problems);
         }
         
         public async Task<ProblemForReadModel> GetProblemAsync(Guid clientId, Guid id)
         {
+            await _clientService.GetClientAsync(clientId);
+
             var problem = await _problemRepository.GetProblemAsync(clientId, id);
-            //if (problem is null)
-            //{
-            //    _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
-            //}
-            return _mapper.Map<Problem, ProblemForReadModel>(problem);
+            if (problem is null)
+            {
+                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Problem with id: {id} cannot be found!");
+            }
+            return _mapper.Map<ProblemForReadModel>(problem);
         }
 
-        public async Task<ProblemForReadModel> CreateProblemAsync(Guid clientId, ProblemForCreateModel model)
+        public async Task<Guid> CreateProblemAsync(Guid clientId, ProblemForCreateModel model)
         {
+            await _clientService.GetClientAsync(clientId);
+
             var problemEntity = _mapper.Map<Problem>(model);
 
             await _problemRepository.CreateProblemAsync(clientId, problemEntity);
 
-            //var bicycleEntity = await _bicycleRepository.GetBicycleAsync(model.BicycleId);
-            //problemEntity.Bicycle = bicycleEntity;
-            return _mapper.Map<ProblemForReadModel>(problemEntity);
+            return problemEntity.Id;
         }
 
-        public async Task<Problem> DeleteProblemAsync(Guid clientId, Guid id)
+        public async Task DeleteProblemAsync(Guid clientId, Guid id)
         {
+            await _clientService.GetClientAsync(clientId);
+
             var problemEntity = await _problemRepository.GetProblemAsync(clientId, id);
-            if (problemEntity != null)
+            if (problemEntity is null)
             {
-                await _problemRepository.DeleteProblemAsync(problemEntity);
+                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Problem with id: {id} cannot be found!");
             }
 
-            return problemEntity;
+            await _problemRepository.DeleteProblemAsync(problemEntity);
         }
 
-        public async Task<Problem> UpdateProblemAsync(Guid clientId, Guid id, ProblemForUpdateModel model)
+        public async Task UpdateProblemAsync(Guid clientId, Guid id, ProblemForUpdateModel model)
         {
+            await _clientService.GetClientAsync(clientId);
+
             var problemEntity = await _problemRepository.GetProblemAsync(clientId, id);
-            if (problemEntity != null)
+            if (problemEntity is null)
             {
-                _mapper.Map(model, problemEntity);
-                await _problemRepository.UpdateProblemAsync(problemEntity);
+                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Problem with id: {id} cannot be found!");
             }
 
-            return problemEntity;
+            _mapper.Map(model, problemEntity);
+            await _problemRepository.UpdateProblemAsync(problemEntity);
+        }
+        public async Task<ProblemForUpdateModel> GetProblemForUpdateModelAsync(Guid clientId, Guid id)
+        {
+            await _clientService.GetClientAsync(clientId);
+
+            var problemEntity = await GetProblemAsync(clientId, id);
+
+            return _mapper.Map<ProblemForUpdateModel>(problemEntity);
         }
 
         public async Task<List<PartProblemForReadModel>> GetPartsListForProblemAsync(Guid clientId, Guid id)

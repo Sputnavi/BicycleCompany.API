@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using BicycleCompany.BLL.ActionFilters;
 using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +17,11 @@ namespace BicycleCompany.BLL.Controllers
     public class ProblemsController : ControllerBase
     {
         private readonly ILoggerManager _logger;
-        private readonly IMapper _mapper;
         private readonly IProblemService _problemService;
 
-        public ProblemsController(ILoggerManager logger, IMapper mapper, IProblemService problemService)
+        public ProblemsController(ILoggerManager logger, IProblemService problemService)
         {
             _logger = logger;
-            _mapper = mapper;
             _problemService = problemService;
         }
 
@@ -39,7 +37,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpHead]
         public async Task<IActionResult> GetProblems(Guid clientId)
         {
-            var problems = await _problemService.GetProblemsListAsync(clientId);
+            var problems = await _problemService.GetProblemListAsync(clientId);
 
             return Ok(problems);
         }
@@ -59,11 +57,6 @@ namespace BicycleCompany.BLL.Controllers
         public async Task<IActionResult> GetProblem(Guid clientId, Guid id)
         {
             var problemEntity = await _problemService.GetProblemAsync(clientId, id);
-            if (problemEntity is null)
-            {
-                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
-                return NotFound("Problem with provided id cannot be found!");
-            }
 
             return Ok(problemEntity);
         }
@@ -80,12 +73,16 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateProblem(Guid clientId, [FromBody] ProblemForCreateModel problem)
         {
-            var problemToReturn = await _problemService.CreateProblemAsync(clientId, problem);
+            if (!ModelState.IsValid)
+            {
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
+            }
 
-            return CreatedAtRoute("GetProblem", new { clientId, id = problemToReturn.Id }, problemToReturn);
+            var problemId = await _problemService.CreateProblemAsync(clientId, problem);
+
+            return Created($"api/clients/{clientId}/problems/" + problemId, new AddedResponse(problemId));
         }
 
         /// <summary>
@@ -102,12 +99,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProblem(Guid clientId, Guid id)
         {
-            var problemEntity = await _problemService.DeleteProblemAsync(clientId, id);
-            if (problemEntity is null)
-            {
-                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
-                return NotFound("Problem with provided id cannot be found!");
-            }
+            await _problemService.DeleteProblemAsync(clientId, id);
 
             return NoContent();
         }
@@ -127,15 +119,14 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateProblem(Guid clientId, Guid id, [FromBody] ProblemForUpdateModel problem)
         {
-            var problemEntity = await _problemService.UpdateProblemAsync(clientId, id, problem);
-            if (problemEntity is null)
+            if (!ModelState.IsValid)
             {
-                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
-                return NotFound("Problem with provided id cannot be found!");
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
             }
+
+            await _problemService.UpdateProblemAsync(clientId, id, problem);
 
             return NoContent();
         }
@@ -164,13 +155,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var problemEntity = await _problemService.GetProblemAsync(clientId, id);
-            if (problemEntity is null)
-            {
-                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
-                return NotFound("Problem with provided id cannot be found!");
-            }
-            var problemToPatch = _mapper.Map<ProblemForUpdateModel>(problemEntity);
+            var problemToPatch = await _problemService.GetProblemForUpdateModelAsync(clientId, id);
 
             patchDoc.ApplyTo(problemToPatch, ModelState);
 

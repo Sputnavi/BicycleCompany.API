@@ -1,15 +1,11 @@
-﻿using AutoMapper;
-using BicycleCompany.BLL.ActionFilters;
-using BicycleCompany.BLL.Services.Contracts;
-using BicycleCompany.DAL.Contracts;
-using BicycleCompany.DAL.Models;
+﻿using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
@@ -18,13 +14,11 @@ namespace BicycleCompany.BLL.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly ILoggerManager _logger;
         private readonly IClientService _clientService;
 
-        public ClientsController(IMapper mapper, ILoggerManager logger, IClientService clientService)
+        public ClientsController(ILoggerManager logger, IClientService clientService)
         {
-            _mapper = mapper;
             _logger = logger;
             _clientService = clientService;
         }
@@ -40,7 +34,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpHead]
         public async Task<IActionResult> GetClients()
         {
-            var clients = await _clientService.GetClientsListAsync();
+            var clients = await _clientService.GetClientListAsync();
 
             return Ok(clients);
         }
@@ -59,11 +53,6 @@ namespace BicycleCompany.BLL.Controllers
         public async Task<IActionResult> GetClient(Guid id)
         {
             var clientEntity = await _clientService.GetClientAsync(id);
-            if (clientEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound("Client with provided id cannot be found!");
-            }
 
             return Ok(clientEntity);
         }
@@ -79,12 +68,16 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateClient([FromBody] ClientForCreateOrUpdateModel client)
         {
-            var clientToReturn = await _clientService.CreateClientAsync(client);
+            if (!ModelState.IsValid)
+            {
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
+            }
 
-            return CreatedAtRoute("GetClient", new { id = clientToReturn.Id }, clientToReturn);
+            var clientId = await _clientService.CreateClientAsync(client);
+
+            return Created("api/clients/" + clientId, new AddedResponse(clientId));
         }
 
         /// <summary>
@@ -92,7 +85,7 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find client</param>
         /// <response code="204">Client deleted successfully</response>
-        /// <response code="404">Client with provided id cannot be found!</response>
+        /// <response code="400">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -100,12 +93,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(Guid id)
         {
-            var clientEntity = await _clientService.DeleteClientAsync(id);
-            if (clientEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound("Client with provided id cannot be found!");
-            }
+            await _clientService.DeleteClientAsync(id);
 
             return NoContent();
         }
@@ -124,15 +112,14 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForCreateOrUpdateModel client)
         {
-            var clientEntity = await _clientService.UpdateClientAsync(id, client);
-            if (clientEntity is null)
+            if (!ModelState.IsValid)
             {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound("Client with provided id cannot be found!");
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
             }
+
+            await _clientService.UpdateClientAsync(id, client);
 
             return NoContent();
         }
@@ -160,13 +147,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var clientEntity = await _clientService.GetClientAsync(id);
-            if (clientEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound("Client with provided id cannot be found!");
-            }
-            var clientToPatch = _mapper.Map<ClientForCreateOrUpdateModel>(clientEntity);
+            var clientToPatch = await _clientService.GetClientForUpdateModelAsync(id);
 
             patchDoc.ApplyTo(clientToPatch, ModelState);
 

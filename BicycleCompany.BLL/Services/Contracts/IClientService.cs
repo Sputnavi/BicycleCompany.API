@@ -9,10 +9,11 @@ namespace BicycleCompany.BLL.Services.Contracts
 {
     public interface IClientService
     {
-        Task<List<ClientForReadModel>> GetClientsListAsync();
+        Task<List<ClientForReadModel>> GetClientListAsync();
         Task<ClientForReadModel> GetClientAsync(Guid id);
-        Task<ClientForReadModel> CreateClientAsync(ClientForCreateOrUpdateModel model);
-        Task<Client> UpdateClientAsync(Guid id, ClientForCreateOrUpdateModel model);
-        Task<Client> DeleteClientAsync(Guid id);
+        Task<Guid> CreateClientAsync(ClientForCreateOrUpdateModel model);
+        Task UpdateClientAsync(Guid id, ClientForCreateOrUpdateModel model);
+        Task DeleteClientAsync(Guid id);
+        Task<ClientForCreateOrUpdateModel> GetClientForUpdateModelAsync(Guid id);
     }
 }

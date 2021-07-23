@@ -1,11 +1,11 @@
-﻿using AutoMapper;
-using BicycleCompany.BLL.ActionFilters;
-using BicycleCompany.BLL.Services.Contracts;
+﻿using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
@@ -14,13 +14,11 @@ namespace BicycleCompany.BLL.Controllers
     [ApiController]
     public class PartsController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly ILoggerManager _logger;
         private readonly IPartService _partService;
 
-        public PartsController(IMapper mapper, ILoggerManager logger, IPartService partService)
+        public PartsController(ILoggerManager logger, IPartService partService)
         {
-            _mapper = mapper;
             _logger = logger;
             _partService = partService;
         }
@@ -36,7 +34,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpHead]
         public async Task<IActionResult> GetParts()
         {
-            var parts = await _partService.GetPartsListAsync();
+            var parts = await _partService.GetPartListAsync();
 
             return Ok(parts);
         }
@@ -55,11 +53,6 @@ namespace BicycleCompany.BLL.Controllers
         public async Task<IActionResult> GetPart(Guid id)
         {
             var partEntity = await _partService.GetPartAsync(id);
-            if (partEntity is null)
-            {
-                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
-                return NotFound("Part with provided id cannot be found!");
-            }
 
             return Ok(partEntity);
         }
@@ -75,12 +68,16 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreatePart([FromBody] PartForCreateOrUpdateModel part)
         {
-            var partToReturn = await _partService.CreatePartAsync(part);
+            if (!ModelState.IsValid)
+            {
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
+            }
 
-            return CreatedAtRoute("GetPart", new { id = partToReturn.Id }, partToReturn);
+            var partId = await _partService.CreatePartAsync(part);
+
+            return Created("api/parts/" + partId, new AddedResponse(partId));
         }
 
         /// <summary>
@@ -96,13 +93,8 @@ namespace BicycleCompany.BLL.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePart(Guid id)
         {
-            var partEntity = await _partService.DeletePartAsync(id);
-            if (partEntity is null)
-            {
-                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
-                return NotFound("Part with provided id cannot be found!");
-            }
-
+            await _partService.DeletePartAsync(id);
+            
             return NoContent();
         }
 
@@ -120,15 +112,14 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdatePart(Guid id, [FromBody] PartForCreateOrUpdateModel part)
         {
-            var partEntity = await _partService.UpdatePartAsync(id, part);
-            if (partEntity is null)
+            if (!ModelState.IsValid)
             {
-                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
-                return NotFound("Part with provided id cannot be found!");
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
             }
+
+            await _partService.UpdatePartAsync(id, part);
 
             return NoContent();
         }
@@ -156,13 +147,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var partEntity = await _partService.GetPartAsync(id);
-            if (partEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound("Client with provided id cannot be found!");
-            }
-            var partToPatch = _mapper.Map<PartForCreateOrUpdateModel>(partEntity);
+            var partToPatch = await _partService.GetPartForUpdateModelAsync(id);
 
             patchDoc.ApplyTo(partToPatch, ModelState);
 

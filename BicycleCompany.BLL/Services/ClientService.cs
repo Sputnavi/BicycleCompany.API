@@ -17,14 +17,16 @@ namespace BicycleCompany.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IClientRepository _clientRepository;
+        private readonly ILoggerManager _logger;
 
-        public ClientService(IMapper mapper, IClientRepository clientRepository)
+        public ClientService(IMapper mapper, IClientRepository clientRepository, ILoggerManager logger)
         {
             _mapper = mapper;
             _clientRepository = clientRepository;
+            _logger = logger;
         }
 
-        public async Task<List<ClientForReadModel>> GetClientsListAsync()
+        public async Task<List<ClientForReadModel>> GetClientListAsync()
         {
             var clients = await _clientRepository.GetClientsAsync();
             return _mapper.Map<List<ClientForReadModel>>(clients);
@@ -33,39 +35,53 @@ namespace BicycleCompany.BLL.Services
         public async Task<ClientForReadModel> GetClientAsync(Guid id)
         {
             var client = await _clientRepository.GetClientAsync(id);
+            if (client is null)
+            {
+                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Client with id: {id} cannot be found!");
+            }
             return _mapper.Map<ClientForReadModel>(client);
         }
 
-        public async Task<ClientForReadModel> CreateClientAsync(ClientForCreateOrUpdateModel model)
+        public async Task<Guid> CreateClientAsync(ClientForCreateOrUpdateModel model)
         {
             var clientEntity = _mapper.Map<Client>(model);
 
             await _clientRepository.CreateClientAsync(clientEntity);
 
-            return _mapper.Map<ClientForReadModel>(clientEntity);
+            return clientEntity.Id;
         }
 
-        public async Task<Client> DeleteClientAsync(Guid id)
+        public async Task DeleteClientAsync(Guid id)
         {
             var clientEntity = await _clientRepository.GetClientAsync(id);
-            if (clientEntity != null)
+            if (clientEntity is null)
             {
-                await _clientRepository.DeleteClientAsync(clientEntity);
+                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Client with id: {id} cannot be found!");
             }
-
-            return clientEntity;
+            
+            await _clientRepository.DeleteClientAsync(clientEntity);
         }
 
-        public async Task<Client> UpdateClientAsync(Guid id, ClientForCreateOrUpdateModel model)
+        public async Task UpdateClientAsync(Guid id, ClientForCreateOrUpdateModel model)
         {
             var clientEntity = await _clientRepository.GetClientAsync(id);
-            if (clientEntity != null)
+            if (clientEntity is null)
             {
-                _mapper.Map(model, clientEntity);
-                await _clientRepository.UpdateClientAsync(clientEntity);
+                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Client with id: {id} cannot be found!");
             }
 
-            return clientEntity;
+            _mapper.Map(model, clientEntity);
+            await _clientRepository.UpdateClientAsync(clientEntity);
+        }
+
+        public async Task<ClientForCreateOrUpdateModel> GetClientForUpdateModelAsync(Guid id)
+        {
+            var clientEntity = await GetClientAsync(id);
+
+            return _mapper.Map<ClientForCreateOrUpdateModel>(clientEntity);
         }
     }
 }

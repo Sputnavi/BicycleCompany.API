@@ -1,6 +1,6 @@
-using BicycleCompany.BLL.ActionFilters;
 using BicycleCompany.BLL.Extensions;
 using BicycleCompany.BLL.Services.Contracts;
+using BicycleCompany.BLL.Utils;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -33,8 +33,6 @@ namespace BicycleCompany.BLL
             services.RegisterRepositories();
             services.RegisterServices();
 
-            services.AddScoped<ValidationFilterAttribute>();
-
             services.AddRazorPages();
             services.AddControllers()
                 .AddNewtonsoftJson();
@@ -50,7 +48,7 @@ namespace BicycleCompany.BLL
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BicycleCompany v1"));
             }
 
-            app.ConfigureExceptionHandler(logger);
+            app.UseMiddleware<ExceptionHandler>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

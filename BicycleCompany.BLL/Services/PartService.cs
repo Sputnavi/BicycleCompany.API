@@ -17,14 +17,16 @@ namespace BicycleCompany.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IPartRepository _partRepository;
+        private readonly ILoggerManager _logger;
 
-        public PartService(IMapper mapper, IPartRepository partRepository)
+        public PartService(IMapper mapper, IPartRepository partRepository, ILoggerManager logger)
         {
             _mapper = mapper;
             _partRepository = partRepository;
+            _logger = logger;
         }
 
-        public async Task<List<PartForReadModel>> GetPartsListAsync()
+        public async Task<List<PartForReadModel>> GetPartListAsync()
         {
             var parts = await _partRepository.GetPartsAsync();
             return _mapper.Map<List<PartForReadModel>>(parts);
@@ -33,40 +35,53 @@ namespace BicycleCompany.BLL.Services
         public async Task<PartForReadModel> GetPartAsync(Guid id)
         {
             var part = await _partRepository.GetPartAsync(id);
+            if (part is null)
+            {
+                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Part with id: {id} cannot be found!");
+            }
             return _mapper.Map<PartForReadModel>(part);
         }
 
-        public async Task<PartForReadModel> CreatePartAsync(PartForCreateOrUpdateModel model)
+        public async Task<Guid> CreatePartAsync(PartForCreateOrUpdateModel model)
         {
             var partEntity = _mapper.Map<Part>(model);
 
             await _partRepository.CreatePartAsync(partEntity);
 
-            return _mapper.Map<PartForReadModel>(partEntity);
+            return partEntity.Id;
         }
 
-        public async Task<Part> DeletePartAsync(Guid id)
+        public async Task DeletePartAsync(Guid id)
         {
             var partEntity = await _partRepository.GetPartAsync(id);
-            if (partEntity != null)
+            if (partEntity is null)
             {
-                await _partRepository.DeletePartAsync(partEntity);
+                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Part with id: {id} cannot be found!");
             }
 
-            return partEntity;
+            await _partRepository.DeletePartAsync(partEntity);
         }
 
-        public async Task<Part> UpdatePartAsync(Guid id, PartForCreateOrUpdateModel model)
+        public async Task UpdatePartAsync(Guid id, PartForCreateOrUpdateModel model)
         {
             var partEntity = await _partRepository.GetPartAsync(id);
-            if (partEntity != null)
+            if (partEntity is null)
             {
-                _mapper.Map(model, partEntity);
-                await _partRepository.UpdatePartAsync(partEntity);
+                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Part with id: {id} cannot be found!");
             }
 
-            return partEntity;
+            _mapper.Map(model, partEntity);
+            await _partRepository.UpdatePartAsync(partEntity);
         }
 
+        public async Task<PartForCreateOrUpdateModel> GetPartForUpdateModelAsync(Guid id)
+        {
+            var partEntity = await GetPartAsync(id);
+
+            return _mapper.Map<PartForCreateOrUpdateModel>(partEntity);
+        }
     }
 }

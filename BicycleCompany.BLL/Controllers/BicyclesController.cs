@@ -1,11 +1,11 @@
-﻿using AutoMapper;
-using BicycleCompany.BLL.ActionFilters;
-using BicycleCompany.BLL.Services.Contracts;
+﻿using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
@@ -16,12 +16,10 @@ namespace BicycleCompany.BLL.Controllers
     {
         private readonly IBicycleService _bicycleService;
         private readonly ILoggerManager _logger;
-        private readonly IMapper _mapper;
 
-        public BicyclesController(ILoggerManager logger, IMapper mapper, IBicycleService bicycleService)
+        public BicyclesController(ILoggerManager logger, IBicycleService bicycleService)
         {
             _logger = logger;
-            _mapper = mapper;
             _bicycleService = bicycleService;
         }
 
@@ -36,7 +34,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpHead]
         public async Task<IActionResult> GetBicycles()
         {
-            var bicycles = await _bicycleService.GetBicyclesListAsync();
+            var bicycles = await _bicycleService.GetBicycleListAsync();
 
             return Ok(bicycles);
         }
@@ -55,11 +53,6 @@ namespace BicycleCompany.BLL.Controllers
         public async Task<IActionResult> GetBicycle(Guid id)
         {
             var bicycleEntity = await _bicycleService.GetBicycleAsync(id);
-            if (bicycleEntity is null)
-            {
-                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                return NotFound("Bicycle with provided id cannot be found!");
-            }
 
             return Ok(bicycleEntity);
         }
@@ -75,12 +68,16 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateBicycle([FromBody] BicycleForCreateOrUpdateModel bicycle)
         {
-            var bicycleToReturn = await _bicycleService.CreateBicycleAsync(bicycle);
+            if (!ModelState.IsValid)
+            {
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
+            }
 
-            return CreatedAtRoute("GetBicycle", new { id = bicycleToReturn.Id }, bicycleToReturn);
+            var bicycleId = await _bicycleService.CreateBicycleAsync(bicycle);
+
+            return Created("api/bicycles/" + bicycleId, new AddedResponse(bicycleId));
         }
 
         /// <summary>
@@ -96,12 +93,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBicycle(Guid id)
         {
-            var bicycleEntity = await _bicycleService.DeleteBicycleAsync(id);
-            if (bicycleEntity is null)
-            {
-                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                return NotFound("Bicycle with provided id cannot be found!");
-            }
+            await _bicycleService.DeleteBicycleAsync(id);
 
             return NoContent();
         }
@@ -120,15 +112,14 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateBicycle(Guid id, [FromBody] BicycleForCreateOrUpdateModel bicycle)
         {
-            var bicycleEntity = await _bicycleService.UpdateBicycleAsync(id, bicycle);
-            if (bicycleEntity is null)
+            if (!ModelState.IsValid)
             {
-                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                return NotFound("Bicycle with provided id cannot be found!");
+                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
             }
+
+            await _bicycleService.UpdateBicycleAsync(id, bicycle);
 
             return NoContent();
         }
@@ -156,13 +147,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var bicycleEntity = await _bicycleService.GetBicycleAsync(id);
-            if (bicycleEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                return NotFound("Client with provided id cannot be found!");
-            }
-            var bicycleToPatch = _mapper.Map<BicycleForCreateOrUpdateModel>(bicycleEntity);
+            var bicycleToPatch = await _bicycleService.GetBicycleForUpdateModelAsync(id);
 
             patchDoc.ApplyTo(bicycleToPatch, ModelState);
 
