@@ -23,7 +23,6 @@ namespace BicycleCompany.DAL.Models
         public string Place { get; set; }
 
         [Required]
-        [MaxLength(20)]
         public Stage Stage { get; set; }
 
         [MaxLength(250)]

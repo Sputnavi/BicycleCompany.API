@@ -16,7 +16,6 @@ namespace BicycleCompany.DAL.Repository
             this.repositoryContext = repositoryContext;
         }
 
-
         public IQueryable<T> FindAll() => repositoryContext.Set<T>().AsNoTracking();
 
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => 
@@ -36,7 +35,7 @@ namespace BicycleCompany.DAL.Repository
 
         public Task DeleteAsync(T entity) {
             repositoryContext.Set<T>().Remove(entity);
-            return repositoryContext .SaveChangesAsync();
+            return repositoryContext.SaveChangesAsync();
         }
     }
 }

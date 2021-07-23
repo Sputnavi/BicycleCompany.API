@@ -3,6 +3,7 @@ using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Response;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Services.Contracts

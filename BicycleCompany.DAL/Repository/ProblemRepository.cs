@@ -16,17 +16,28 @@ namespace BicycleCompany.DAL.Repository
 
         }
 
-        public Task CreateProblemAsync(Problem problem) => CreateAsync(problem);
+        public Task CreateProblemAsync(Guid clientId, Problem problem)
+        {
+            problem.ClientId = clientId;
+            return CreateAsync(problem);
+        }
 
         public Task DeleteProblemAsync(Problem problem) => DeleteAsync(problem);
 
         public Task UpdateProblemAsync(Problem problem) => UpdateAsync(problem);
 
-        public async Task<Problem> GetProblemAsync(Guid id) => 
-            await FindByCondition(p => p.Id.Equals(id)).SingleOrDefaultAsync();
+        public async Task<Problem> GetProblemAsync(Guid clientId, Guid id) => 
+            await FindByCondition(p => p.Id.Equals(id) && p.ClientId.Equals(clientId))
+            .Include(p => p.PartProblems)
+                .ThenInclude(pp => pp.Part)
+            .Include(p => p.Bicycle)
+            .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Problem>> GetProblemsAsync() =>
-            await FindAll()
+        public async Task<IEnumerable<Problem>> GetProblemsAsync(Guid clientId) =>
+            await FindByCondition(p => p.ClientId.Equals(clientId))
+            .Include(p => p.Bicycle)
+            .Include(p => p.PartProblems)
+                .ThenInclude(pp => pp.Part)
             .OrderBy(p => p.Stage)
             .ToListAsync();
     }

@@ -20,6 +20,23 @@ namespace BicycleCompany.BLL.Mapping
             CreateMap<Part, PartForReadModel>();
             CreateMap<PartForCreateOrUpdateModel, Part>().ReverseMap();
             CreateMap<PartForReadModel, PartForCreateOrUpdateModel>();
+
+            CreateMap<Problem, ProblemForReadModel>()
+                .ForMember(dst => dst.Parts,
+                    opts => opts.MapFrom(x => x.PartProblems));
+
+            CreateMap<ProblemForCreateModel, Problem>()
+                .ForMember(dst => dst.PartProblems,
+                    opts => opts.MapFrom(x => x.Parts))
+                .ForMember(dst => dst.Parts,
+                    opts => opts.Ignore());
+
+            CreateMap<ProblemForUpdateModel, Problem>();
+            CreateMap<ProblemForReadModel, ProblemForCreateModel>();
+            CreateMap<ProblemForReadModel, ProblemForUpdateModel>();
+
+            CreateMap<PartProblem, PartProblemForCreateModel>().ReverseMap();
+            CreateMap<PartProblem, PartProblemForReadModel>();
         }
     }
 }

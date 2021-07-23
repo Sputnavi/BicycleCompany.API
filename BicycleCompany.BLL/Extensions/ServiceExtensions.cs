@@ -27,6 +27,8 @@ namespace BicycleCompany.BLL.Extensions
             services.AddScoped<IBicycleRepository, BicycleRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IPartRepository, PartRepository>();
+            services.AddScoped<IProblemRepository, ProblemRepository>();
+            services.AddScoped<IPartProblemRepository, PartProblemRepository>();
         }
 
         public static void RegisterServices(this IServiceCollection services)
@@ -34,6 +36,7 @@ namespace BicycleCompany.BLL.Extensions
             services.AddScoped<IBicycleService, BicycleService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IPartService, PartService>();
+            services.AddScoped<IProblemService, ProblemService>();
         }
 
         public static void ConfigureSwagger(this IServiceCollection services) =>

@@ -67,5 +67,6 @@ namespace BicycleCompany.BLL.Services
 
             return partEntity;
         }
+
     }
 }
