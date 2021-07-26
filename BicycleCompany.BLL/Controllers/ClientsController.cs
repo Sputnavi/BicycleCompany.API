@@ -72,10 +72,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] ClientForCreateOrUpdateModel client)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             var clientId = await _clientService.CreateClientAsync(client);
 
@@ -116,10 +113,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForCreateOrUpdateModel client)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             await _clientService.UpdateClientAsync(id, client);
 

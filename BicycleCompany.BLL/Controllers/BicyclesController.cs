@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using BicycleCompany.BLL.Extensions;
 
 namespace BicycleCompany.BLL.Controllers
 {
@@ -71,10 +72,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBicycle([FromBody] BicycleForCreateOrUpdateModel bicycle)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             var bicycleId = await _bicycleService.CreateBicycleAsync(bicycle);
 
@@ -115,10 +113,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBicycle(Guid id, [FromBody] BicycleForCreateOrUpdateModel bicycle)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             await _bicycleService.UpdateBicycleAsync(id, bicycle);
 

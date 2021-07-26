@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using BicycleCompany.BLL.Extensions;
 using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Request.RequestFeatures;
@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,10 +75,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProblem(Guid clientId, [FromBody] ProblemForCreateModel problem)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             var problemId = await _problemService.CreateProblemAsync(clientId, problem);
 
@@ -122,10 +118,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProblem(Guid clientId, Guid id, [FromBody] ProblemForUpdateModel problem)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             await _problemService.UpdateProblemAsync(clientId, id, problem);
 

@@ -71,10 +71,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePart([FromBody] PartForCreateOrUpdateModel part)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             var partId = await _partService.CreatePartAsync(part);
 
@@ -115,10 +112,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePart(Guid id, [FromBody] PartForCreateOrUpdateModel part)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentException(string.Join(", ", ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage)));
-            }
+            this.ValidateObject();
 
             await _partService.UpdatePartAsync(id, part);
 
