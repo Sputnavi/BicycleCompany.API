@@ -1,9 +1,11 @@
 ﻿using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,9 +34,9 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
-        public async Task<IActionResult> GetClients()
+        public async Task<IActionResult> GetClientList([FromQuery]ClientParameters clientParameters)
         {
-            var clients = await _clientService.GetClientListAsync();
+            var clients = await _clientService.GetClientListAsync(clientParameters, Response);
 
             return Ok(clients);
         }

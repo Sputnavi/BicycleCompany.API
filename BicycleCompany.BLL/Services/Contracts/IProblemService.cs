@@ -1,5 +1,7 @@
 ﻿using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +10,7 @@ namespace BicycleCompany.BLL.Services.Contracts
 {
     public interface IProblemService
     {
-        Task<List<ProblemForReadModel>> GetProblemListAsync(Guid clientId);
+        Task<List<ProblemForReadModel>> GetProblemListAsync(Guid clientId, ProblemParameters problemParameters, HttpResponse response);
         Task<ProblemForReadModel> GetProblemAsync(Guid clientId, Guid id);
         Task<Guid> CreateProblemAsync(Guid clientId, ProblemForCreateModel model);
         Task UpdateProblemAsync(Guid clientId, Guid id, ProblemForUpdateModel model);

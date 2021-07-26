@@ -1,5 +1,4 @@
-﻿using BicycleCompany.DAL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,7 +17,7 @@ namespace BicycleCompany.Models.Request
         public string Place { get; set; }
 
         [Required]
-        public Stage Stage { get; set; }
+        public int Stage { get; set; }
 
         [MaxLength(250)]
         public string Description { get; set; }

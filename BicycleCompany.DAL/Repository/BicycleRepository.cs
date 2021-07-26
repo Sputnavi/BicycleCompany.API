@@ -1,9 +1,9 @@
 ﻿using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
+using BicycleCompany.DAL.Repository.Extensions;
+using BicycleCompany.Models.Request.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
@@ -22,12 +22,17 @@ namespace BicycleCompany.DAL.Repository
 
         public Task UpdateBicycleAsync(Bicycle bicycle) => UpdateAsync(bicycle);
 
-        public async Task<Bicycle> GetBicycleAsync(Guid id) => 
+        public async Task<Bicycle> GetBicycleAsync(Guid id) =>
             await FindByCondition(b => b.Id.Equals(id)).SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Bicycle>> GetBicyclesAsync() => 
-            await FindAll()
-            .OrderBy(b => b.Name)
-            .ToListAsync();
+        public async Task<PagedList<Bicycle>> GetBicycleListAsync(BicycleParameters bicycleParameters)
+        {
+            var bicycles = await FindAll()
+                .Search(bicycleParameters.SearchTerm)
+                .Sort(bicycleParameters.OrderBy)
+                .ToListAsync();
+
+            return PagedList<Bicycle>.ToPagedList(bicycles, bicycleParameters.PageNumber, bicycleParameters.PageSize);
+        }
     }
 }

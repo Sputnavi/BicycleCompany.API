@@ -1,5 +1,6 @@
 ﻿using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -32,9 +33,9 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
-        public async Task<IActionResult> GetParts()
+        public async Task<IActionResult> GetPartList([FromQuery]PartParameters partParameters)
         {
-            var parts = await _partService.GetPartListAsync();
+            var parts = await _partService.GetPartListAsync(partParameters, Response);
 
             return Ok(parts);
         }

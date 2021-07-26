@@ -3,7 +3,10 @@ using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,9 +29,19 @@ namespace BicycleCompany.BLL.Services
             _logger = logger;
         }
 
-        public async Task<List<PartForReadModel>> GetPartListAsync()
+        public async Task<List<PartForReadModel>> GetPartListAsync(PartParameters partParameters, HttpResponse response)
         {
-            var parts = await _partRepository.GetPartsAsync();
+            if (!partParameters.ValidAmountRange)
+            {
+                throw new ArgumentException("Max amount can't be less than min amount.");
+            }
+
+            var parts = await _partRepository.GetPartsAsync(partParameters);
+            if (response != null)
+            {
+                response.Headers.Add("Pagination", JsonConvert.SerializeObject(parts.MetaData));
+            }
+
             return _mapper.Map<List<PartForReadModel>>(parts);
         }
 

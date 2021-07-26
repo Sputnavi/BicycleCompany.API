@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -35,9 +36,9 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
-        public async Task<IActionResult> GetProblems(Guid clientId)
+        public async Task<IActionResult> GetProblems(Guid clientId, [FromQuery] ProblemParameters problemParameters)
         {
-            var problems = await _problemService.GetProblemListAsync(clientId);
+            var problems = await _problemService.GetProblemListAsync(clientId, problemParameters, Response);
 
             return Ok(problems);
         }

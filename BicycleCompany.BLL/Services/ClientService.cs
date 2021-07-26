@@ -3,7 +3,10 @@ using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,9 +29,15 @@ namespace BicycleCompany.BLL.Services
             _logger = logger;
         }
 
-        public async Task<List<ClientForReadModel>> GetClientListAsync()
+        public async Task<List<ClientForReadModel>> GetClientListAsync(ClientParameters clientParameters, HttpResponse response = null)
         {
-            var clients = await _clientRepository.GetClientsAsync();
+            var clients = await _clientRepository.GetClientListAsync(clientParameters);
+
+            if (response != null)
+            {
+                response.Headers.Add("Pagination", JsonConvert.SerializeObject(clients.MetaData));
+            }
+
             return _mapper.Map<List<ClientForReadModel>>(clients);
         }
 

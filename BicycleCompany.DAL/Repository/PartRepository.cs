@@ -1,9 +1,9 @@
 ﻿using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
+using BicycleCompany.DAL.Repository.Extensions;
+using BicycleCompany.Models.Request.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
@@ -25,9 +25,15 @@ namespace BicycleCompany.DAL.Repository
         public async Task<Part> GetPartAsync(Guid id) => 
             await FindByCondition(p => p.Id.Equals(id)).SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Part>> GetPartsAsync() => 
-            await FindAll()
-            .OrderBy(p => p.Name)
-            .ToListAsync();
+        public async Task<PagedList<Part>> GetPartsAsync(PartParameters partParameters)
+        {
+            var parts = await FindAll()
+                .FilterParts(partParameters.MinAmount, partParameters.MaxAmount)
+                .Search(partParameters.SearchTerm)
+                .Sort(partParameters.OrderBy)
+                .ToListAsync();
+
+            return PagedList<Part>.ToPagedList(parts, partParameters.PageNumber, partParameters.PageSize);
+        }
     }
 }

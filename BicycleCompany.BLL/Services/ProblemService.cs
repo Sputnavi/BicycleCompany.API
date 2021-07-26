@@ -3,7 +3,10 @@ using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,13 +35,17 @@ namespace BicycleCompany.BLL.Services
             _clientService = clientService;
         }
 
-        public async Task<List<ProblemForReadModel>> GetProblemListAsync(Guid clientId)
+        public async Task<List<ProblemForReadModel>> GetProblemListAsync(Guid clientId, ProblemParameters problemParameters, HttpResponse response)
         {
             await _clientService.GetClientAsync(clientId);
 
-            var problems = await _problemRepository.GetProblemsAsync(clientId);
+            var problems = await _problemRepository.GetProblemListAsync(clientId, problemParameters);
+            if (response != null)
+            {
+                response.Headers.Add("Pagination", JsonConvert.SerializeObject(problems.MetaData));
+            }
 
-            return _mapper.Map<IEnumerable<Problem>, List<ProblemForReadModel>>(problems);
+            return _mapper.Map<List<ProblemForReadModel>>(problems);
         }
         
         public async Task<ProblemForReadModel> GetProblemAsync(Guid clientId, Guid id)

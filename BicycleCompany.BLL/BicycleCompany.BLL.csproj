@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BicycleCompany.DAL\BicycleCompany.DAL.csproj" />
     <ProjectReference Include="..\BicycleCompany.Models\BicycleCompany.Models.csproj" />
   </ItemGroup>
 
