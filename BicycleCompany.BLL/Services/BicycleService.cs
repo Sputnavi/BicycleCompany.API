@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BicycleCompany.BLL.Services.Contracts;
+using BicycleCompany.BLL.Utils;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
@@ -43,13 +44,9 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<BicycleForReadModel> GetBicycleAsync(Guid id)
         {
-            var bicycle = await _bicycleRepository.GetBicycleAsync(id);
-            if (bicycle is null)
-            {
-                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Bicycle with id: {id} cannot be found!");
-            }
-            return _mapper.Map<BicycleForReadModel>(bicycle);
+            var bicycleEntity = await _bicycleRepository.GetBicycleAsync(id);
+            CheckIfFound(id, bicycleEntity);
+            return _mapper.Map<BicycleForReadModel>(bicycleEntity);
         }
 
         public async Task<Guid> CreateBicycleAsync(BicycleForCreateOrUpdateModel model)
@@ -64,11 +61,7 @@ namespace BicycleCompany.BLL.Services
         public async Task DeleteBicycleAsync(Guid id)
         {
             var bicycleEntity = await _bicycleRepository.GetBicycleAsync(id);
-            if (bicycleEntity is null)
-            {
-                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Bicycle with id: {id} cannot be found!");
-            }
+            CheckIfFound(id, bicycleEntity);
 
             await _bicycleRepository.DeleteBicycleAsync(bicycleEntity);
         }
@@ -76,11 +69,7 @@ namespace BicycleCompany.BLL.Services
         public async Task UpdateBicycleAsync(Guid id, BicycleForCreateOrUpdateModel model)
         {
             var bicycleEntity = await _bicycleRepository.GetBicycleAsync(id);
-            if (bicycleEntity is null)
-            {
-                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Bicycle with id: {id} cannot be found!");
-            }
+            CheckIfFound(id, bicycleEntity);
 
             _mapper.Map(model, bicycleEntity);
             await _bicycleRepository.UpdateBicycleAsync(bicycleEntity);
@@ -91,6 +80,15 @@ namespace BicycleCompany.BLL.Services
             var bicycleEntity = await GetBicycleAsync(id);
 
             return _mapper.Map<BicycleForCreateOrUpdateModel>(bicycleEntity);
+        }
+
+        private void CheckIfFound(Guid id, Bicycle bicycleEntity)
+        {
+            if (bicycleEntity is null)
+            {
+                _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
+                throw new EntityNotFoundException("Bicycle", id);
+            }
         }
     }
 }

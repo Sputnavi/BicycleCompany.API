@@ -1,13 +1,12 @@
-﻿using BicycleCompany.BLL.Services.Contracts;
+﻿using BicycleCompany.BLL.Extensions;
+using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
@@ -140,7 +139,7 @@ namespace BicycleCompany.BLL.Controllers
             if (patchDoc is null)
             {
                 _logger.LogError("patchDoc object sent from client is null.");
-                return BadRequest("patchDoc object is null");
+                return BadRequest("Sent patch document is empty.");
             }
 
             var clientToPatch = await _clientService.GetClientForUpdateModelAsync(id);

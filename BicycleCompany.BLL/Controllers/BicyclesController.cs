@@ -140,7 +140,7 @@ namespace BicycleCompany.BLL.Controllers
             if (patchDoc is null)
             {
                 _logger.LogError("patchDoc object sent from client is null.");
-                return BadRequest("patchDoc object is null");
+                return BadRequest("Sent patch document is empty.");
             }
 
             var bicycleToPatch = await _bicycleService.GetBicycleForUpdateModelAsync(id);

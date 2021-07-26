@@ -22,7 +22,7 @@ namespace BicycleCompany.BLL.Utils
             {
                 await _next.Invoke(context);
             }
-            catch (ArgumentNullException ex)
+            catch (EntityNotFoundException ex)
             {
                 await HandleExceptionAsync(context, ex.Message, HttpStatusCode.NotFound);
             }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BicycleCompany.BLL.Services.Contracts;
+using BicycleCompany.BLL.Utils;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
@@ -43,14 +44,10 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<ClientForReadModel> GetClientAsync(Guid id)
         {
-            var client = await _clientRepository.GetClientAsync(id);
-            if (client is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Client with id: {id} cannot be found!");
-            }
-            return _mapper.Map<ClientForReadModel>(client);
-           }
+            var clientEntity = await _clientRepository.GetClientAsync(id);
+            CheckIfFound(id, clientEntity);
+            return _mapper.Map<ClientForReadModel>(clientEntity);
+        }
 
         public async Task<Guid> CreateClientAsync(ClientForCreateOrUpdateModel model)
         {
@@ -64,11 +61,7 @@ namespace BicycleCompany.BLL.Services
         public async Task DeleteClientAsync(Guid id)
         {
             var clientEntity = await _clientRepository.GetClientAsync(id);
-            if (clientEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Client with id: {id} cannot be found!");
-            }
+            CheckIfFound(id, clientEntity);
             
             await _clientRepository.DeleteClientAsync(clientEntity);
         }
@@ -76,11 +69,7 @@ namespace BicycleCompany.BLL.Services
         public async Task UpdateClientAsync(Guid id, ClientForCreateOrUpdateModel model)
         {
             var clientEntity = await _clientRepository.GetClientAsync(id);
-            if (clientEntity is null)
-            {
-                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Client with id: {id} cannot be found!");
-            }
+            CheckIfFound(id, clientEntity);
 
             _mapper.Map(model, clientEntity);
             await _clientRepository.UpdateClientAsync(clientEntity);
@@ -91,6 +80,15 @@ namespace BicycleCompany.BLL.Services
             var clientEntity = await GetClientAsync(id);
 
             return _mapper.Map<ClientForCreateOrUpdateModel>(clientEntity);
+        }
+
+        private void CheckIfFound(Guid id, Client clientEntity)
+        {
+            if (clientEntity is null)
+            {
+                _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
+                throw new EntityNotFoundException("Client", id);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BicycleCompany.BLL.Services.Contracts;
+using BicycleCompany.BLL.Utils;
 using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
 using BicycleCompany.Models.Request;
@@ -47,13 +48,9 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<PartForReadModel> GetPartAsync(Guid id)
         {
-            var part = await _partRepository.GetPartAsync(id);
-            if (part is null)
-            {
-                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Part with id: {id} cannot be found!");
-            }
-            return _mapper.Map<PartForReadModel>(part);
+            var partEntity = await _partRepository.GetPartAsync(id);
+            CheckIfFound(id, partEntity);
+            return _mapper.Map<PartForReadModel>(partEntity);
         }
 
         public async Task<Guid> CreatePartAsync(PartForCreateOrUpdateModel model)
@@ -68,11 +65,8 @@ namespace BicycleCompany.BLL.Services
         public async Task DeletePartAsync(Guid id)
         {
             var partEntity = await _partRepository.GetPartAsync(id);
-            if (partEntity is null)
-            {
-                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Part with id: {id} cannot be found!");
-            }
+
+            CheckIfFound(id, partEntity);
 
             await _partRepository.DeletePartAsync(partEntity);
         }
@@ -80,11 +74,7 @@ namespace BicycleCompany.BLL.Services
         public async Task UpdatePartAsync(Guid id, PartForCreateOrUpdateModel model)
         {
             var partEntity = await _partRepository.GetPartAsync(id);
-            if (partEntity is null)
-            {
-                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
-                throw new ArgumentNullException($"Part with id: {id} cannot be found!");
-            }
+            CheckIfFound(id, partEntity);
 
             _mapper.Map(model, partEntity);
             await _partRepository.UpdatePartAsync(partEntity);
@@ -95,6 +85,15 @@ namespace BicycleCompany.BLL.Services
             var partEntity = await GetPartAsync(id);
 
             return _mapper.Map<PartForCreateOrUpdateModel>(partEntity);
+        }
+
+        private void CheckIfFound(Guid id, Part partEntity)
+        {
+            if (partEntity is null)
+            {
+                _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
+                throw new EntityNotFoundException("Part", id);
+            }
         }
     }
 }
