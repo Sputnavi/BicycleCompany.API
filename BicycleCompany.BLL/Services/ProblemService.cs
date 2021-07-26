@@ -19,16 +19,14 @@ namespace BicycleCompany.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IProblemRepository _problemRepository;
-        private readonly IBicycleRepository _bicycleRepository;
         private readonly IPartProblemRepository _partProblemRepository;
         private readonly ILoggerManager _logger;
         private readonly IClientService _clientService;
 
-        public ProblemService(IMapper mapper, IProblemRepository problemRepository, IBicycleRepository bicycleRepository, ILoggerManager logger, IPartProblemRepository partProblemRepository, IClientService clientService)
+        public ProblemService(IMapper mapper, IProblemRepository problemRepository, ILoggerManager logger, IPartProblemRepository partProblemRepository, IClientService clientService)
         {
             _mapper = mapper;
             _problemRepository = problemRepository;
-            _bicycleRepository = bicycleRepository;
             _logger = logger;
             _partProblemRepository = partProblemRepository;
             _clientService = clientService;
@@ -104,13 +102,43 @@ namespace BicycleCompany.BLL.Services
             return _mapper.Map<ProblemForUpdateModel>(problemEntity);
         }
 
-        public async Task<List<PartProblemForReadModel>> GetPartsListForProblemAsync(Guid clientId, Guid id)
+        public async Task<List<PartProblemForReadModel>> GetPartListForProblemAsync(Guid clientId, Guid problemId)
         {
-            /*var parts = await _partProblemRepository.GetParts(clientId, id);
-            return _mapper.Map<List<PartProblemForReadModel>>(parts);*/
-            
-            var problemEntity = await _problemRepository.GetProblemAsync(clientId, id);
-            return _mapper.Map<List<PartProblemForReadModel>>(problemEntity.PartProblems);
+            await GetProblemAsync(clientId, problemId);
+
+            var parts = await _partProblemRepository.GetPartProblemsAsync(clientId, problemId);
+
+            return _mapper.Map<List<PartProblemForReadModel>>(parts);
+        }
+
+        public async Task<Guid> CreatePartForProblemAsync(Guid clientId, Guid problemId, PartProblemForCreateModel partProblem)
+        {
+            var problemEntity = await GetProblemAsync(clientId, problemId);
+            if (problemEntity.Parts.Any(pp => pp.Part.Id.Equals(partProblem.PartId))) 
+            {
+                _logger.LogInfo("Same part for provided problem already exists!");
+                throw new ArgumentException($"Same part for provided problem already exists!");
+            }
+
+            var partProblemEntity = _mapper.Map<PartProblem>(partProblem);
+
+            await _partProblemRepository.CreatePartProblemAsync(clientId, problemId, partProblemEntity);
+
+            return partProblemEntity.Id;
+        }
+
+        public async Task DeletePartForProblemAsync(Guid clientId, Guid problemId, Guid id)
+        {
+            await GetProblemAsync(clientId, problemId);
+
+            var partProblemEntity = await _partProblemRepository.GetPartProblemAsync(clientId, problemId, id);
+            if (partProblemEntity is null)
+            {
+                _logger.LogInfo($"Part-Problem with id: {id} doesn't exist in the database.");
+                throw new ArgumentNullException($"Part-Problem with id: {id} cannot be found!");
+            }
+
+            await _partProblemRepository.DeletePartProblemAsync(partProblemEntity);
         }
     }
 }

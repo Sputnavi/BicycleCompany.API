@@ -1,9 +1,9 @@
 ﻿using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
@@ -15,26 +15,28 @@ namespace BicycleCompany.DAL.Repository
         {
 
         }
-        //private Task Get
 
-        public Task CreatePartProblemAsync(Guid clientId, Guid id, PartProblem partProblem)
+        public Task CreatePartProblemAsync(Guid clientId, Guid problemId, PartProblem partProblem)
         {
-            throw new NotImplementedException();
+            partProblem.ProblemId = problemId;
+            return CreateAsync(partProblem);
         }
 
-        public Task DeletePartProblemAsync(PartProblem partProblem)
-        {
-            throw new NotImplementedException();
-        }
+        public Task DeletePartProblemAsync(PartProblem partProblem) => DeleteAsync(partProblem);
 
-        public Task<PartProblem> GetPartProblemAsync(Guid clientId, Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<PartProblem> GetPartProblemAsync(Guid clientId, Guid problemId, Guid id) =>
+            await FindByCondition(pp => pp.Problem.ClientId.Equals(clientId) && pp.ProblemId.Equals(problemId) && pp.Id == id)
+                .Include(pp => pp.Part)
+                .SingleOrDefaultAsync();
 
-        public Task<IEnumerable<PartProblem>> GetPartProblemsAsync(Guid clientId, Guid id)
+        public async Task<IEnumerable<PartProblem>> GetPartProblemsAsync(Guid clientId, Guid problemId)
         {
-            throw new NotImplementedException();
+            var parts = await FindByCondition(pp => pp.Problem.ClientId.Equals(clientId) && pp.ProblemId.Equals(problemId))
+                .Include(pp => pp.Part)
+                .OrderBy(pp => pp.Amount)
+                .ToListAsync();
+
+            return parts;
         }
     }
 }

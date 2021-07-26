@@ -41,7 +41,7 @@ namespace BicycleCompany.BLL.Services
                 throw new ArgumentNullException($"Client with id: {id} cannot be found!");
             }
             return _mapper.Map<ClientForReadModel>(client);
-        }
+           }
 
         public async Task<Guid> CreateClientAsync(ClientForCreateOrUpdateModel model)
         {

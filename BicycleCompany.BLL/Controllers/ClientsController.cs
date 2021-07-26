@@ -85,7 +85,7 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find client</param>
         /// <response code="204">Client deleted successfully</response>
-        /// <response code="400">Client with provided id cannot be found!</response>
+        /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
