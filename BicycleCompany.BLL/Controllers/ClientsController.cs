@@ -29,7 +29,7 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <response code="200">List of clients returned successfully</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientForReadModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
@@ -47,7 +47,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="200">Client returned successfully</response> 
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientForReadModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}", Name = "GetClient")]
@@ -75,7 +75,7 @@ namespace BicycleCompany.BLL.Controllers
 
             var clientId = await _clientService.CreateClientAsync(client);
 
-            return Created("api/clients/" + clientId, new AddedResponse(clientId));
+            return CreatedAtRoute("GetClient", new { id = clientId }, new AddedResponse(clientId));
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <response code="200">List of parts returned successfully</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PartForReadModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
@@ -48,7 +48,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="200">Part returned successfully</response> 
         /// <response code="404">Part with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PartForReadModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}", Name = "GetPart")]
@@ -76,7 +76,7 @@ namespace BicycleCompany.BLL.Controllers
 
             var partId = await _partService.CreatePartAsync(part);
 
-            return Created("api/parts/" + partId, new AddedResponse(partId));
+            return CreatedAtRoute("GetPart", new { id = partId }, new AddedResponse(partId));
         }
 
         /// <summary>

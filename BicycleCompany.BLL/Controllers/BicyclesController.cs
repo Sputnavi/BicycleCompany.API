@@ -1,4 +1,5 @@
-﻿using BicycleCompany.BLL.Services.Contracts;
+﻿using BicycleCompany.BLL.Extensions;
+using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
@@ -6,9 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using BicycleCompany.BLL.Extensions;
 
 namespace BicycleCompany.BLL.Controllers
 {
@@ -31,7 +30,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="200">List of bicycles returned successfully</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BicycleForReadModel))]
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetBicycleList([FromQuery]BicycleParameters bicycleParameters)
@@ -48,7 +47,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="200">Bicycle returned successfully</response> 
         /// <response code="404">Bicycle with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BicycleForReadModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}", Name = "GetBicycle")]
@@ -76,7 +75,7 @@ namespace BicycleCompany.BLL.Controllers
 
             var bicycleId = await _bicycleService.CreateBicycleAsync(bicycle);
 
-            return Created("api/bicycles/" + bicycleId, new AddedResponse(bicycleId));
+            return CreatedAtRoute("GetBicycle", new { id = bicycleId }, new AddedResponse(bicycleId));
         }
 
         /// <summary>
