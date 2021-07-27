@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/bicycles")]
     [ApiController]
     public class BicyclesController : ControllerBase
     {

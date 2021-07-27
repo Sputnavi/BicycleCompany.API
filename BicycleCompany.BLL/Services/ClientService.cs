@@ -22,12 +22,14 @@ namespace BicycleCompany.BLL.Services
         private readonly IMapper _mapper;
         private readonly IClientRepository _clientRepository;
         private readonly ILoggerManager _logger;
+        private readonly IBicycleService _bicycleService;
 
-        public ClientService(IMapper mapper, IClientRepository clientRepository, ILoggerManager logger)
+        public ClientService(IMapper mapper, IClientRepository clientRepository, ILoggerManager logger, IBicycleService bicycleService)
         {
             _mapper = mapper;
             _clientRepository = clientRepository;
             _logger = logger;
+            _bicycleService = bicycleService;
         }
 
         public async Task<List<ClientForReadModel>> GetClientListAsync(ClientParameters clientParameters, HttpResponse response = null)
@@ -51,6 +53,12 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<Guid> CreateClientAsync(ClientForCreateOrUpdateModel model)
         {
+            // Check if bicycles exist.
+            foreach (var problem in model?.Problems)
+            {
+                await _bicycleService.GetBicycleAsync(problem.BicycleId);
+            }
+
             var clientEntity = _mapper.Map<Client>(model);
 
             await _clientRepository.CreateClientAsync(clientEntity);

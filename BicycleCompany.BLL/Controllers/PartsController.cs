@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/parts")]
     [ApiController]
     public class PartsController : ControllerBase
     {
