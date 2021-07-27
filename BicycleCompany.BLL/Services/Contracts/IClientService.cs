@@ -1,5 +1,4 @@
-﻿using BicycleCompany.DAL.Models;
-using BicycleCompany.Models.Request;
+﻿using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
@@ -17,5 +16,10 @@ namespace BicycleCompany.BLL.Services.Contracts
         Task UpdateClientAsync(Guid id, ClientForCreateOrUpdateModel model);
         Task DeleteClientAsync(Guid id);
         Task<ClientForCreateOrUpdateModel> GetClientForUpdateModelAsync(Guid id);
+
+        Task<List<ProblemForReadModel>> GetProblemListForClientAsync(Guid clientId, ProblemParameters problemParameters, HttpResponse response);
+        Task<ProblemForReadModel> GetProblemForClientAsync(Guid clientId, Guid problemId);
+        Task<Guid> CreateProblemForClientAsync(Guid clientId, ProblemForCreateModel model);
+        Task DeleteProblemForClientAsync(Guid clientId, Guid problemId);
     }
 }

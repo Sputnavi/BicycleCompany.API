@@ -16,9 +16,8 @@ namespace BicycleCompany.DAL.Repository
 
         }
 
-        public Task CreateProblemAsync(Guid clientId, Problem problem)
+        public Task CreateProblemAsync(Problem problem)
         {
-            problem.ClientId = clientId;
             return CreateAsync(problem);
         }
 
@@ -26,24 +25,44 @@ namespace BicycleCompany.DAL.Repository
 
         public Task UpdateProblemAsync(Problem problem) => UpdateAsync(problem);
 
-        public async Task<Problem> GetProblemAsync(Guid clientId, Guid id) => 
-            await FindByCondition(p => p.Id.Equals(id) && p.ClientId.Equals(clientId))
-            .Include(p => p.PartProblems)
+        public async Task<Problem> GetProblemForClientAsync(Guid clientId, Guid problemId) => 
+            await FindByCondition(p => p.Id.Equals(problemId) && p.ClientId.Equals(clientId))
+            .Include(p => p.PartDetails)
                 .ThenInclude(pp => pp.Part)
             .Include(p => p.Bicycle)
             .SingleOrDefaultAsync();
 
-        public async Task<PagedList<Problem>> GetProblemListAsync(Guid clientId, ProblemParameters problemParameters)
+        public async Task<PagedList<Problem>> GetProblemListForClientAsync(Guid clientId, ProblemParameters problemParameters)
         {
             var problems = await FindByCondition(p => p.ClientId.Equals(clientId))
                 .Search(problemParameters.SearchTerm)
                 .Include(p => p.Bicycle)
-                .Include(p => p.PartProblems)
+                .Include(p => p.PartDetails)
                     .ThenInclude(pp => pp.Part)
                 .Sort(problemParameters.OrderBy)
                 .ToListAsync();
 
             return PagedList<Problem>.ToPagedList(problems, problemParameters.PageNumber, problemParameters.PageSize);
         }
+
+        public async Task<PagedList<Problem>> GetProblemListAsync(ProblemParameters problemParameters)
+        {
+            var problems = await FindAll()
+                .Search(problemParameters.SearchTerm)
+                .Include(p => p.Bicycle)
+                .Include(p => p.PartDetails)
+                    .ThenInclude(pp => pp.Part)
+                .Sort(problemParameters.OrderBy)
+                .ToListAsync();
+
+            return PagedList<Problem>.ToPagedList(problems, problemParameters.PageNumber, problemParameters.PageSize);
+        }
+
+        public async Task<Problem> GetProblemAsync(Guid id) =>
+            await FindByCondition(p => p.Id.Equals(id))
+            .Include(p => p.PartDetails)
+                .ThenInclude(pp => pp.Part)
+            .Include(p => p.Bicycle)
+            .SingleOrDefaultAsync();
     }
 }

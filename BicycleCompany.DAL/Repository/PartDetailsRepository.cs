@@ -16,22 +16,18 @@ namespace BicycleCompany.DAL.Repository
 
         }
 
-        public Task CreatePartDetailAsync(Guid clientId, Guid problemId, PartDetails partProblem)
-        {
-            partProblem.ProblemId = problemId;
-            return CreateAsync(partProblem);
-        }
+        public Task CreatePartDetailAsync(PartDetails partProblem) => CreateAsync(partProblem);
 
         public Task DeletePartDetailAsync(PartDetails partProblem) => DeleteAsync(partProblem);
 
-        public async Task<PartDetails> GetPartDetailAsync(Guid clientId, Guid problemId, Guid id) =>
-            await FindByCondition(pd => pd.Problem.ClientId.Equals(clientId) && pd.ProblemId.Equals(problemId) && pd.Id == id)
+        public async Task<PartDetails> GetPartDetailAsync(Guid problemId, Guid partId) =>
+            await FindByCondition(pd => pd.ProblemId.Equals(problemId) && pd.PartId.Equals(partId))
                 .Include(pd => pd.Part)
                 .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<PartDetails>> GetPartDetailListAsync(Guid clientId, Guid problemId)
+        public async Task<IEnumerable<PartDetails>> GetPartDetailListAsync(Guid problemId)
         {
-            var parts = await FindByCondition(pd => pd.Problem.ClientId.Equals(clientId) && pd.ProblemId.Equals(problemId))
+            var parts = await FindByCondition(pd => pd.ProblemId.Equals(problemId))
                 .Include(pd => pd.Part)
                 .OrderBy(pd => pd.Amount)
                 .ToListAsync();

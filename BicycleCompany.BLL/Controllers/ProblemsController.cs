@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
-    [Route("api/clients/{clientId}/problems")]
+    [Route("api/problems")]
     [ApiController]
     public class ProblemsController : ControllerBase
     {
@@ -28,16 +28,15 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Return a list of all Problems.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client who has problems</param>
         /// <response code="200">List of problems returned successfully</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
-        public async Task<IActionResult> GetProblems(Guid clientId, [FromQuery] ProblemParameters problemParameters)
+        public async Task<IActionResult> GetProblemList([FromQuery] ProblemParameters problemParameters)
         {
-            var problems = await _problemService.GetProblemListAsync(clientId, problemParameters, Response);
+            var problems = await _problemService.GetProblemListAsync(problemParameters, Response);
 
             return Ok(problems);
         }
@@ -45,7 +44,6 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Return Problem.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client who has a problem</param>
         /// <param name="problemId">The value that is used to find problem</param>
         /// <response code="200">Problem returned successfully</response> 
         /// <response code="404">Problem with provided id cannot be found!</response>
@@ -54,9 +52,9 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{problemId}", Name = "GetProblem")]
-        public async Task<IActionResult> GetProblem(Guid clientId, Guid problemId)
+        public async Task<IActionResult> GetProblem(Guid problemId)
         {
-            var problemEntity = await _problemService.GetProblemAsync(clientId, problemId);
+            var problemEntity = await _problemService.GetProblemAsync(problemId);
 
             return Ok(problemEntity);
         }
@@ -64,7 +62,6 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Create new Problem.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client who got a problem</param>
         /// <param name="problem">The problem object for creation</param>
         /// <response code="201">Problem created successfully</response> 
         /// <response code="400">Problem model is invalid</response>
@@ -73,19 +70,18 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> CreateProblem(Guid clientId, [FromBody] ProblemForCreateModel problem)
+        public async Task<IActionResult> CreateProblem([FromBody] ProblemForCreateModel problem)
         {
             this.ValidateObject();
 
-            var problemId = await _problemService.CreateProblemAsync(clientId, problem);
+            var problemId = await _problemService.CreateProblemAsync(problem);
 
-            return CreatedAtRoute("GetProblem", new { clientId = clientId, problemId = problemId }, new AddedResponse(problemId));
+            return CreatedAtRoute("GetProblem", new { problemId = problemId }, new AddedResponse(problemId));
         }
 
         /// <summary>
         /// Delete Problem.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client whose problem should be deleted</param>
         /// <param name="problemId">The value that is used to find problem</param>
         /// <response code="204">Problem deleted successfully</response>
         /// <response code="404">Problem with provided id cannot be found!</response>
@@ -94,9 +90,9 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{problemId}")]
-        public async Task<IActionResult> DeleteProblem(Guid clientId, Guid problemId)
+        public async Task<IActionResult> DeleteProblem(Guid problemId)
         {
-            await _problemService.DeleteProblemAsync(clientId, problemId);
+            await _problemService.DeleteProblemAsync(problemId);
 
             return NoContent();
         }
@@ -104,7 +100,6 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Update Problem information.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client whose problem should be updated</param>
         /// <param name="problemId">The value that is used to find problem</param>
         /// <param name="problem">The problem object which is used for update problem with provided id</param>
         /// <response code="204">Problem deleted successfully</response>
@@ -116,11 +111,11 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{problemId}")]
-        public async Task<IActionResult> UpdateProblem(Guid clientId, Guid problemId, [FromBody] ProblemForUpdateModel problem)
+        public async Task<IActionResult> UpdateProblem(Guid problemId, [FromBody] ProblemForUpdateModel problem)
         {
             this.ValidateObject();
 
-            await _problemService.UpdateProblemAsync(clientId, problemId, problem);
+            await _problemService.UpdateProblemAsync(problemId, problem);
 
             return NoContent();
         }
@@ -128,7 +123,6 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Partially update Problem information.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client whose problem should be partially updated</param>
         /// <param name="problemId">The value that is used to find problem</param>
         /// <param name="patchDoc">The document with an array of operations for problem with provided id</param>
         /// <response code="204">Problem deleted successfully</response>
@@ -140,7 +134,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPatch("{problemId}")]
-        public async Task<IActionResult> PartiallyUpdateProblem(Guid clientId, Guid problemId,
+        public async Task<IActionResult> PartiallyUpdateProblem(Guid problemId,
             [FromBody] JsonPatchDocument<ProblemForUpdateModel> patchDoc)
         {
             if (patchDoc is null)
@@ -149,7 +143,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest("Sent patch document is empty.");
             }
 
-            var problemToPatch = await _problemService.GetProblemForUpdateModelAsync(clientId, problemId);
+            var problemToPatch = await _problemService.GetProblemForUpdateModelAsync(problemId);
 
             patchDoc.ApplyTo(problemToPatch, ModelState);
 
@@ -159,7 +153,7 @@ namespace BicycleCompany.BLL.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _problemService.UpdateProblemAsync(clientId, problemId, problemToPatch);
+            await _problemService.UpdateProblemAsync(problemId, problemToPatch);
 
             return NoContent();
         }
@@ -167,30 +161,47 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Return a list of all Parts for Problem.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client whose problem should be handled</param>
         /// <param name="problemId">The value that is used to find problem</param>
-        /// <response code="200">List of clients returned successfully</response>
+        /// <response code="200">List of parts returned successfully</response>
         /// <response code="404">Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{problemId}/parts", Name = "GetPartForProblem")]
-        public async Task<IActionResult> GetPartsForProblem(Guid clientId, Guid problemId)
+        [HttpGet("{problemId}/parts")]
+        public async Task<IActionResult> GetPartsForProblem(Guid problemId)
         {
-            var parts = await _problemService.GetPartListForProblemAsync(clientId, problemId);
+            var parts = await _problemService.GetPartListForProblemAsync(problemId);
 
             return Ok(parts);
         }
 
         /// <summary>
+        /// Return Part for Problem.
+        /// </summary>
+        /// <param name="problemId">The value that is used to find problem</param>
+        /// <param name="partId">The value that is used to find part</param>
+        /// <response code="200">Part returned successfully</response>
+        /// <response code="404">Part with provided id cannot be found!</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{problemId}/parts/{partId}", Name = "GetPartForProblem")]
+        public async Task<IActionResult> GetPartsForProblem(Guid problemId, Guid partId)
+        {
+            var part = await _problemService.GetPartForProblemAsync(problemId, partId);
+
+            return Ok(part);
+        }
+
+        /// <summary>
         /// Add new Part for problem.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client whose problem should be handled</param>
         /// <param name="problemId">The value that is used to find problem</param>
-        /// <param name="part">The Part-Problem object for adding</param>
+        /// <param name="part">The Part details object for adding</param>
         /// <response code="201">Part added to problem successfully</response>
-        /// <response code="400">Part-Problem model is invalid</response>
+        /// <response code="400">Part details model is invalid</response>
         /// <response code="404">Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -198,29 +209,28 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{problemId}/parts")]
-        public async Task<IActionResult> CreatePartForProblem(Guid clientId, Guid problemId, [FromBody] PartDetailsForCreateModel part)
+        public async Task<IActionResult> CreatePartForProblem(Guid problemId, [FromBody] PartDetailsForCreateModel part)
         {
-            var partProblemId = await _problemService.CreatePartForProblemAsync(clientId, problemId, part);
+            var partProblemId = await _problemService.CreatePartForProblemAsync(problemId, part);
 
-            return Created($"api/clients/{clientId}/problems/{problemId}/parts/" + partProblemId, new AddedResponse(partProblemId));
+            return Created($"api/problems/{problemId}/parts/" + partProblemId, new AddedResponse(partProblemId));
         }
 
         /// <summary>
         /// Delete Part for Problem.
         /// </summary>
-        /// <param name="clientId">The value that is used to find client whose problem should be handled</param>
         /// <param name="problemId">The value that is used to find problem</param>
-        /// <param name="partProblemId">The value that is used to find part</param>
+        /// <param name="partId">The value that is used to find part</param>
         /// <response code="204">Part deleted for problem successfully</response>
         /// <response code="404">Part-Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("{problemId}/parts/{partProblemId}")]
-        public async Task<IActionResult> DeletePartForProblem(Guid clientId, Guid problemId, Guid partProblemId)
+        [HttpDelete("{problemId}/parts/{partId}")]
+        public async Task<IActionResult> DeletePartForProblem(Guid problemId, Guid partId)
         {
-            await _problemService.DeletePartForProblemAsync(clientId, problemId, partProblemId);
+            await _problemService.DeletePartForProblemAsync(problemId, partId);
 
             return NoContent();
         }

@@ -28,6 +28,6 @@ namespace BicycleCompany.DAL.Models
         public string Description { get; set; }
 
         public List<Part> Parts { get; set; }
-        public List<PartDetails> PartProblems { get; set; }
+        public List<PartDetails> PartDetails { get; set; }
     }
 }

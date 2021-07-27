@@ -156,5 +156,82 @@ namespace BicycleCompany.BLL.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Return a list of all Problems for Client.
+        /// </summary>
+        /// <param name="clientId">The value that is used to find client who has problems</param>
+        /// <response code="200">List of problems returned successfully</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{clientId}/problems")]
+        [HttpHead("{clientId}/problems")]
+        public async Task<IActionResult> GetProblemListForClient(Guid clientId, [FromQuery] ProblemParameters problemParameters)
+        {
+            var problems = await _clientService.GetProblemListForClientAsync(clientId, problemParameters, Response);
+
+            return Ok(problems);
+        }
+
+        /// <summary>
+        /// Return Problem for Client.
+        /// </summary>
+        /// <param name="clientId">The value that is used to find client who has a problem</param>
+        /// <param name="problemId">The value that is used to find problem</param>
+        /// <response code="200">Problem returned successfully</response> 
+        /// <response code="404">Problem with provided id cannot be found!</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{clientId}/problems/{problemId}", Name = "GetProblemForClient")]
+        public async Task<IActionResult> GetProblemForClient(Guid clientId, Guid problemId)
+        {
+            var problemEntity = await _clientService.GetProblemForClientAsync(clientId, problemId);
+
+            return Ok(problemEntity);
+        }
+
+        
+        /// <summary>
+        /// Create new Problem for Client.
+        /// </summary>
+        /// <param name="clientId">The value that is used to find client who got a problem</param>
+        /// <param name="problem">The problem object for creation</param>
+        /// <response code="201">Problem created successfully</response> 
+        /// <response code="400">Problem model is invalid</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("{clientId}/problems")]
+        public async Task<IActionResult> CreateProblemForClient(Guid clientId, [FromBody] ProblemForCreateModel problem)
+        {
+            this.ValidateObject();
+
+            var problemId = await _clientService.CreateProblemForClientAsync(clientId, problem);
+
+            return CreatedAtRoute("GetProblemForClient", new { clientId = clientId, problemId = problemId }, new AddedResponse(problemId));
+        }
+
+        /// <summary>
+        /// Delete Problem for Client.
+        /// </summary>
+        /// <param name="clientId">The value that is used to find client whose problem should be deleted</param>
+        /// <param name="problemId">The value that is used to find problem</param>
+        /// <response code="204">Problem deleted successfully</response>
+        /// <response code="404">Problem with provided id cannot be found!</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpDelete("{clientId}/problems/{problemId}")]
+        public async Task<IActionResult> DeleteProblemForClient(Guid clientId, Guid problemId)
+        {
+            await _clientService.DeleteProblemForClientAsync(clientId, problemId);
+
+            return NoContent();
+        }
     }
 }

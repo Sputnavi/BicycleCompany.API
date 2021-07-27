@@ -7,6 +7,9 @@ namespace BicycleCompany.Models.Request
     public class ProblemForCreateModel
     {
         [Required]
+        public Guid ClientId { get; set; }
+
+        [Required]
         public Guid BicycleId { get; set; }
 
         [Required]

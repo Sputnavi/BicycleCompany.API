@@ -10,14 +10,16 @@ namespace BicycleCompany.BLL.Services.Contracts
 {
     public interface IProblemService
     {
-        Task<List<ProblemForReadModel>> GetProblemListAsync(Guid clientId, ProblemParameters problemParameters, HttpResponse response);
-        Task<ProblemForReadModel> GetProblemAsync(Guid clientId, Guid problemId);
-        Task<Guid> CreateProblemAsync(Guid clientId, ProblemForCreateModel model);
-        Task UpdateProblemAsync(Guid clientId, Guid problemId, ProblemForUpdateModel model);
-        Task DeleteProblemAsync(Guid clientId, Guid problemId);
-        Task<ProblemForUpdateModel> GetProblemForUpdateModelAsync(Guid clientId, Guid problemId);
-        Task<List<PartDetailsForReadModel>> GetPartListForProblemAsync(Guid clientId, Guid problemId);
-        Task<Guid> CreatePartForProblemAsync(Guid clientId, Guid problemId, PartDetailsForCreateModel partProblem);
-        Task DeletePartForProblemAsync(Guid clientId, Guid problemId, Guid partProblemId);
+        Task<List<ProblemForReadModel>> GetProblemListAsync(ProblemParameters problemParameters, HttpResponse response);
+        Task<ProblemForReadModel> GetProblemAsync(Guid problemId);
+        Task<Guid> CreateProblemAsync(ProblemForCreateModel model);
+        Task UpdateProblemAsync(Guid problemId, ProblemForUpdateModel model);
+        Task DeleteProblemAsync(Guid problemId);
+        Task<ProblemForUpdateModel> GetProblemForUpdateModelAsync(Guid problemId);
+
+        Task<List<PartDetailsForReadModel>> GetPartListForProblemAsync(Guid problemId);
+        Task<PartDetailsForReadModel> GetPartForProblemAsync(Guid problemId, Guid partId);
+        Task<Guid> CreatePartForProblemAsync(Guid problemId, PartDetailsForCreateModel partProblem);
+        Task DeletePartForProblemAsync(Guid problemId, Guid partProblemId);
     }
 }

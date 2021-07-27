@@ -26,11 +26,11 @@ namespace BicycleCompany.DAL
                 .UsingEntity<PartDetails>(
                     j => j
                     .HasOne(k => k.Problem)
-                    .WithMany(t => t.PartProblems)
+                    .WithMany(t => t.PartDetails)
                     .HasForeignKey(k => k.ProblemId),
                     j => j
                     .HasOne(k => k.Part)
-                    .WithMany(s => s.PartProblems)
+                    .WithMany(s => s.PartDetails)
                     .HasForeignKey(k => k.PartId)
                 );
 

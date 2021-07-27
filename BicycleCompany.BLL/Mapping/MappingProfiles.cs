@@ -23,10 +23,10 @@ namespace BicycleCompany.BLL.Mapping
 
             CreateMap<Problem, ProblemForReadModel>()
                 .ForMember(dst => dst.Parts,
-                    opts => opts.MapFrom(x => x.PartProblems));
+                    opts => opts.MapFrom(x => x.PartDetails));
 
             CreateMap<ProblemForCreateModel, Problem>()
-                .ForMember(dst => dst.PartProblems,
+                .ForMember(dst => dst.PartDetails,
                     opts => opts.MapFrom(x => x.Parts))
                 .ForMember(dst => dst.Parts,
                     opts => opts.Ignore());

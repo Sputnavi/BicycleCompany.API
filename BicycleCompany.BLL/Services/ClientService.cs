@@ -23,13 +23,17 @@ namespace BicycleCompany.BLL.Services
         private readonly IClientRepository _clientRepository;
         private readonly ILoggerManager _logger;
         private readonly IBicycleService _bicycleService;
+        private readonly IProblemRepository _problemRepository;
+        private readonly IPartService _partService;
 
-        public ClientService(IMapper mapper, IClientRepository clientRepository, ILoggerManager logger, IBicycleService bicycleService)
+        public ClientService(IPartService partService, IBicycleService bicycleService, IClientRepository clientRepository, IProblemRepository problemRepository, ILoggerManager logger, IMapper mapper)
         {
-            _mapper = mapper;
-            _clientRepository = clientRepository;
-            _logger = logger;
+            _partService = partService;
             _bicycleService = bicycleService;
+            _clientRepository = clientRepository;
+            _problemRepository = problemRepository;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<List<ClientForReadModel>> GetClientListAsync(ClientParameters clientParameters, HttpResponse response = null)
@@ -53,10 +57,14 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<Guid> CreateClientAsync(ClientForCreateOrUpdateModel model)
         {
-            // Check if bicycles exist.
+            // Check if bicycles and parts exist.
             foreach (var problem in model?.Problems)
             {
                 await _bicycleService.GetBicycleAsync(problem.BicycleId);
+                foreach (var part in problem?.Parts)
+                {
+                    await _partService.GetPartAsync(part.PartId);
+                }
             }
 
             var clientEntity = _mapper.Map<Client>(model);
@@ -96,6 +104,59 @@ namespace BicycleCompany.BLL.Services
             {
                 _logger.LogInfo($"Client with id: {id} doesn't exist in the database.");
                 throw new EntityNotFoundException("Client", id);
+            }
+        }
+
+        public async Task<List<ProblemForReadModel>> GetProblemListForClientAsync(Guid clientId, ProblemParameters problemParameters, HttpResponse response = null)
+        {
+            await GetClientAsync(clientId);
+            var problems = await _problemRepository.GetProblemListForClientAsync(clientId, problemParameters);
+
+            if (response != null)
+            {
+                response.Headers.Add("Pagination", JsonConvert.SerializeObject(problems.MetaData));
+            }
+
+            return _mapper.Map<List<ProblemForReadModel>>(problems);
+        }
+
+        public async Task<ProblemForReadModel> GetProblemForClientAsync(Guid clientId, Guid problemId)
+        {
+            await GetClientAsync(clientId);
+
+            var problemEntity = await _problemRepository.GetProblemForClientAsync(clientId, problemId);
+            CheckIfFound(problemId, problemEntity);
+            return _mapper.Map<ProblemForReadModel>(problemEntity);
+        }
+
+        public async Task<Guid> CreateProblemForClientAsync(Guid clientId, ProblemForCreateModel model)
+        {
+            await GetClientAsync(clientId);
+            model.ClientId = clientId;
+
+            var problemEntity = _mapper.Map<Problem>(model);
+
+            await _problemRepository.CreateProblemAsync(problemEntity);
+
+            return problemEntity.Id;
+        }
+
+        public async Task DeleteProblemForClientAsync(Guid clientId, Guid problemId)
+        {
+            await GetClientAsync(clientId);
+
+            var problemEntity = await _problemRepository.GetProblemForClientAsync(clientId, problemId);
+            CheckIfFound(problemId, problemEntity);
+
+            await _problemRepository.DeleteProblemAsync(problemEntity);
+        }
+
+        private void CheckIfFound(Guid id, Problem problemEntity)
+        {
+            if (problemEntity is null)
+            {
+                _logger.LogInfo($"Problem with id: {id} doesn't exist in the database.");
+                throw new EntityNotFoundException("Problem", id);
             }
         }
     }
