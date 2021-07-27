@@ -9,7 +9,7 @@ namespace BicycleCompany.Models.Response
 
         public BicycleForReadModel Bicycle { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime ReceivingDate { get; set; }
 
         public string Place { get; set; }
 
@@ -17,6 +17,6 @@ namespace BicycleCompany.Models.Response
 
         public string Description { get; set; }
 
-        public List<PartProblemForReadModel> Parts { get; set; }
+        public List<PartDetailsForReadModel> Parts { get; set; }
     }
 }

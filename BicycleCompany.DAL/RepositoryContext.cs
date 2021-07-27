@@ -23,7 +23,7 @@ namespace BicycleCompany.DAL
                 .Entity<Part>()
                 .HasMany(p => p.Problems)
                 .WithMany(pr => pr.Parts)
-                .UsingEntity<PartProblem>(
+                .UsingEntity<PartDetails>(
                     j => j
                     .HasOne(k => k.Problem)
                     .WithMany(t => t.PartProblems)
@@ -82,7 +82,7 @@ namespace BicycleCompany.DAL
                     BicycleId = bicycleId,
                     Place = "Outside the city",
                     Stage = Stage.Received,
-                    Date = DateTime.Now,
+                    ReceivingDate = DateTime.Now,
                     Description = "The seat was broken in half"
                 }
             );

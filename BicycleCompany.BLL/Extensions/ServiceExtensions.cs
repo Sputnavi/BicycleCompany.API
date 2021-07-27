@@ -28,7 +28,7 @@ namespace BicycleCompany.BLL.Extensions
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IPartRepository, PartRepository>();
             services.AddScoped<IProblemRepository, ProblemRepository>();
-            services.AddScoped<IPartProblemRepository, PartProblemRepository>();
+            services.AddScoped<IPartDetailsRepository, PartDetailsRepository>();
         }
 
         public static void RegisterServices(this IServiceCollection services)

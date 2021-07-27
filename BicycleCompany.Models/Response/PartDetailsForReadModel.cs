@@ -2,7 +2,7 @@
 
 namespace BicycleCompany.Models.Response
 {
-    public class PartProblemForReadModel
+    public class PartDetailsForReadModel
     {
         public Guid Id { get; set; }
         public PartForReadModel Part { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BicycleCompany.DAL.Models
 {
@@ -16,7 +15,7 @@ namespace BicycleCompany.DAL.Models
         public Bicycle Bicycle { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime ReceivingDate { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -29,6 +28,6 @@ namespace BicycleCompany.DAL.Models
         public string Description { get; set; }
 
         public List<Part> Parts { get; set; }
-        public List<PartProblem> PartProblems { get; set; }
+        public List<PartDetails> PartProblems { get; set; }
     }
 }

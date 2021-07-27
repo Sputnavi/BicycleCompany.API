@@ -16,6 +16,6 @@ namespace BicycleCompany.DAL.Models
         public int Amount { get; set; }
 
         public List<Problem> Problems { get; set; }
-        public List<PartProblem> PartProblems { get; set; }
+        public List<PartDetails> PartProblems { get; set; }
     }
 }

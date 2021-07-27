@@ -16,8 +16,8 @@ namespace BicycleCompany.BLL.Services.Contracts
         Task UpdateProblemAsync(Guid clientId, Guid problemId, ProblemForUpdateModel model);
         Task DeleteProblemAsync(Guid clientId, Guid problemId);
         Task<ProblemForUpdateModel> GetProblemForUpdateModelAsync(Guid clientId, Guid problemId);
-        Task<List<PartProblemForReadModel>> GetPartListForProblemAsync(Guid clientId, Guid problemId);
-        Task<Guid> CreatePartForProblemAsync(Guid clientId, Guid problemId, PartProblemForCreateModel partProblem);
+        Task<List<PartDetailsForReadModel>> GetPartListForProblemAsync(Guid clientId, Guid problemId);
+        Task<Guid> CreatePartForProblemAsync(Guid clientId, Guid problemId, PartDetailsForCreateModel partProblem);
         Task DeletePartForProblemAsync(Guid clientId, Guid problemId, Guid partProblemId);
     }
 }

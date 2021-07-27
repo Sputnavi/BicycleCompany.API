@@ -53,7 +53,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{id}", Name = "GetProblem")]
+        [HttpGet("{problemId}", Name = "GetProblem")]
         public async Task<IActionResult> GetProblem(Guid clientId, Guid problemId)
         {
             var problemEntity = await _problemService.GetProblemAsync(clientId, problemId);
@@ -79,7 +79,7 @@ namespace BicycleCompany.BLL.Controllers
 
             var problemId = await _problemService.CreateProblemAsync(clientId, problem);
 
-            return CreatedAtRoute("GetProblem", new { clientId, problemId }, new AddedResponse(problemId));
+            return CreatedAtRoute("GetProblem", new { clientId = clientId, problemId = problemId }, new AddedResponse(problemId));
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("{id}")]
+        [HttpDelete("{problemId}")]
         public async Task<IActionResult> DeleteProblem(Guid clientId, Guid problemId)
         {
             await _problemService.DeleteProblemAsync(clientId, problemId);
@@ -115,7 +115,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPut("{id}")]
+        [HttpPut("{problemId}")]
         public async Task<IActionResult> UpdateProblem(Guid clientId, Guid problemId, [FromBody] ProblemForUpdateModel problem)
         {
             this.ValidateObject();
@@ -139,7 +139,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPatch("{id}")]
+        [HttpPatch("{problemId}")]
         public async Task<IActionResult> PartiallyUpdateProblem(Guid clientId, Guid problemId,
             [FromBody] JsonPatchDocument<ProblemForUpdateModel> patchDoc)
         {
@@ -175,7 +175,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{id}/parts", Name = "GetPartForProblem")]
+        [HttpGet("{problemId}/parts", Name = "GetPartForProblem")]
         public async Task<IActionResult> GetPartsForProblem(Guid clientId, Guid problemId)
         {
             var parts = await _problemService.GetPartListForProblemAsync(clientId, problemId);
@@ -197,8 +197,8 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost("{id}/parts")]
-        public async Task<IActionResult> CreatePartForProblem(Guid clientId, Guid problemId, [FromBody] PartProblemForCreateModel part)
+        [HttpPost("{problemId}/parts")]
+        public async Task<IActionResult> CreatePartForProblem(Guid clientId, Guid problemId, [FromBody] PartDetailsForCreateModel part)
         {
             var partProblemId = await _problemService.CreatePartForProblemAsync(clientId, problemId, part);
 
@@ -217,7 +217,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("{id}/parts/{partProblemId}")]
+        [HttpDelete("{problemId}/parts/{partProblemId}")]
         public async Task<IActionResult> DeletePartForProblem(Guid clientId, Guid problemId, Guid partProblemId)
         {
             await _problemService.DeletePartForProblemAsync(clientId, problemId, partProblemId);

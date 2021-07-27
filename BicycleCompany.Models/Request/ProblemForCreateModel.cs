@@ -10,7 +10,7 @@ namespace BicycleCompany.Models.Request
         public Guid BicycleId { get; set; }
 
         [Required]
-        public DateTime Date { get; set; } = DateTime.Now;
+        public DateTime ReceivingDate { get; set; } = DateTime.Now;
 
         [Required]
         [MaxLength(200)]
@@ -22,6 +22,6 @@ namespace BicycleCompany.Models.Request
         [MaxLength(250)]
         public string Description { get; set; }
 
-        public List<PartProblemForCreateModel> Parts { get; set; }
+        public List<PartDetailsForCreateModel> Parts { get; set; }
     }
 }

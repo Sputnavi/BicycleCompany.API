@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BicycleCompany.DAL.Models
 {
-    public class PartProblem
+    public class PartDetails
     {
         public Guid Id { get; set; }
 

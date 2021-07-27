@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BicycleCompany.Models.Request
 {
-    public class PartProblemForCreateModel
+    public class PartDetailsForCreateModel
     {
         [Required]
         public Guid PartId { get; set; }

@@ -4,14 +4,16 @@ using BicycleCompany.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BicycleCompany.DAL.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20210727084640_ChangeProblemDateName")]
+    partial class ChangeProblemDateName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,13 +50,13 @@ namespace BicycleCompany.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("09cf3df1-841e-4bc6-a776-2e1c39521537"),
+                            Id = new Guid("9f33715f-48e0-4f97-bee8-01434879b74e"),
                             Model = "Turbo",
                             Name = "LTD"
                         },
                         new
                         {
-                            Id = new Guid("3f5854b5-3dd7-4e4a-8c56-002b343015f4"),
+                            Id = new Guid("1eeae9f5-2771-4ee9-8be3-6ed28f8dc25c"),
                             Model = "Tango",
                             Name = "Aist"
                         });
@@ -83,7 +85,7 @@ namespace BicycleCompany.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1a4c61ff-d374-484e-9e48-3397155b210f"),
+                            Id = new Guid("3864abb0-c8e5-4c16-9d51-16a0250ebfc4"),
                             Name = "Andrew Vertuha"
                         });
                 });
@@ -115,19 +117,19 @@ namespace BicycleCompany.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1db9b37c-89c6-4338-80f9-936d1b568e79"),
+                            Id = new Guid("7ecded60-fa8d-4548-b4b9-d99a47bf3671"),
                             Amount = 7,
                             Name = "Wheel"
                         },
                         new
                         {
-                            Id = new Guid("00cbaa19-0db5-4db7-ab0b-8808e5675609"),
+                            Id = new Guid("2cdc9959-0f3d-4042-888e-261cc340cf35"),
                             Amount = 3,
                             Name = "Handlebar"
                         });
                 });
 
-            modelBuilder.Entity("BicycleCompany.DAL.Models.PartDetails", b =>
+            modelBuilder.Entity("BicycleCompany.DAL.Models.PartProblem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +150,7 @@ namespace BicycleCompany.DAL.Migrations
 
                     b.HasIndex("ProblemId");
 
-                    b.ToTable("PartDetails");
+                    b.ToTable("PartProblem");
                 });
 
             modelBuilder.Entity("BicycleCompany.DAL.Models.Problem", b =>
@@ -194,12 +196,12 @@ namespace BicycleCompany.DAL.Migrations
                             ClientId = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f2b"),
                             Description = "The seat was broken in half",
                             Place = "Outside the city",
-                            ReceivingDate = new DateTime(2021, 7, 27, 12, 0, 10, 152, DateTimeKind.Local).AddTicks(8241),
+                            ReceivingDate = new DateTime(2021, 7, 27, 11, 46, 39, 692, DateTimeKind.Local).AddTicks(807),
                             Stage = 0
                         });
                 });
 
-            modelBuilder.Entity("BicycleCompany.DAL.Models.PartDetails", b =>
+            modelBuilder.Entity("BicycleCompany.DAL.Models.PartProblem", b =>
                 {
                     b.HasOne("BicycleCompany.DAL.Models.Part", "Part")
                         .WithMany("PartProblems")
