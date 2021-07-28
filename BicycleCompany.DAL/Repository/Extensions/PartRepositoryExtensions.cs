@@ -35,8 +35,5 @@ namespace BicycleCompany.DAL.Repository.Extensions
 
             return parts.OrderBy(orderQuery);
         }
-
-        public static IQueryable<Part> FilterParts(this IQueryable<Part> parts, int minAmount, int maxAmount) =>
-            parts.Where(p => p.Amount >= minAmount && p.Amount <= maxAmount);
     }
 }

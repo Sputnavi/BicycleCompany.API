@@ -28,7 +28,6 @@ namespace BicycleCompany.DAL.Repository
         public async Task<PagedList<Part>> GetPartsAsync(PartParameters partParameters)
         {
             var parts = await FindAll()
-                .FilterParts(partParameters.MinAmount, partParameters.MaxAmount)
                 .Search(partParameters.SearchTerm)
                 .Sort(partParameters.OrderBy)
                 .ToListAsync();

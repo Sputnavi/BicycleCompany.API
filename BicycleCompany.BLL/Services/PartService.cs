@@ -32,11 +32,6 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<List<PartForReadModel>> GetPartListAsync(PartParameters partParameters, HttpResponse response)
         {
-            if (!partParameters.ValidAmountRange)
-            {
-                throw new ArgumentException("Max amount can't be less than min amount.");
-            }
-
             var parts = await _partRepository.GetPartsAsync(partParameters);
             if (response != null)
             {

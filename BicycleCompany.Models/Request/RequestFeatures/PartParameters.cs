@@ -8,9 +8,5 @@
         }
 
         public string SearchTerm { get; set; }
-        public int MinAmount { get; set; }
-        public int MaxAmount { get; set; } = int.MaxValue;
-
-        public bool ValidAmountRange => MaxAmount >= MinAmount;
     }
 }

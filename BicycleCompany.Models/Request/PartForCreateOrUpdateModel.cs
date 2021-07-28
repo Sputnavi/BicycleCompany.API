@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BicycleCompany.Models.Request
 {
@@ -8,8 +7,5 @@ namespace BicycleCompany.Models.Request
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
-
-        [Range(0, int.MaxValue)]
-        public int Amount { get; set; }
     }
 }

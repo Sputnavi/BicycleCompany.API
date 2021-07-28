@@ -17,6 +17,8 @@ namespace BicycleCompany.DAL
         public DbSet<Part> Parts { get; set; }
         public DbSet<Problem> Problems { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
@@ -36,6 +38,7 @@ namespace BicycleCompany.DAL
 
             Guid clientId = new Guid("3B4E22BE-C10D-4303-BF57-03ECA2F13F2B");
             Guid bicycleId = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD6");
+            Guid adminId = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48649");
 
             modelBuilder.Entity<Bicycle>()
                 .HasData(
@@ -92,20 +95,35 @@ namespace BicycleCompany.DAL
                 new Part
                 {
                     Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE5B"),
-                    Name = "Seat",
-                    Amount = 5
+                    Name = "Seat"
                 },
                 new Part
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Wheel",
-                    Amount = 7
+                    Name = "Wheel"
                 },
                 new Part
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Handlebar",
-                    Amount = 3
+                    Name = "Handlebar"
+                }
+            );
+
+            modelBuilder.Entity<User>()
+                .HasData(
+                new User
+                {
+                    Id = adminId,
+                    Login = "Admin",
+                    Password = "pa55w0rd",
+                    Role = "Administrator"
+                },
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    Login = "User",
+                    Password = "1234",
+                    Role = null
                 }
             );
         }
