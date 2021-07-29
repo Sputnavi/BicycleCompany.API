@@ -37,6 +37,11 @@ namespace BicycleCompany.BLL.Mapping
 
             CreateMap<PartDetails, PartDetailsForCreateModel>().ReverseMap();
             CreateMap<PartDetails, PartDetailsForReadModel>();
+
+            CreateMap<User, UserForReadModel>();
+            CreateMap<UserForUpdateModel, User>();
+            CreateMap<UserForReadModel, UserForUpdateModel>();
+            CreateMap<UserForRegistrationModel, User>();
         }
     }
 }

@@ -3,6 +3,7 @@ using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
+    [Authorize(Roles = "Master")]
     [Route("api/bicycles")]
     [ApiController]
     public class BicyclesController : ControllerBase
@@ -28,8 +30,12 @@ namespace BicycleCompany.BLL.Controllers
         /// Return a list of all Bicycles.
         /// </summary>
         /// <response code="200">List of bicycles returned successfully</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BicycleForReadModel))]
         [HttpGet]
         [HttpHead]
@@ -45,9 +51,13 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find bicycle</param>
         /// <response code="200">Bicycle returned successfully</response> 
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Bicycle with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BicycleForReadModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}", Name = "GetBicycle")]
@@ -64,9 +74,13 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="bicycle">The Bicycle object for creation</param>
         /// <response code="201">Bicycle created successfully</response> 
         /// <response code="400">Bicycle model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public async Task<IActionResult> CreateBicycle([FromBody] BicycleForCreateOrUpdateModel bicycle)
@@ -83,9 +97,13 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find Bicycle</param>
         /// <response code="204">Bicycle deleted successfully</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Bicycle with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{id}")]
@@ -101,12 +119,16 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find Bicycle</param>
         /// <param name="bicycle">The Bicycle object which is used for update Bicycle with provided id</param>
-        /// <response code="204">Bicycle deleted successfully</response>
+        /// <response code="204">Bicycle updated successfully</response>
         /// <response code="400">Bicycle model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Bicycle with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
@@ -118,18 +140,22 @@ namespace BicycleCompany.BLL.Controllers
 
             return NoContent();
         }
-        
+
         /// <summary>
         /// Partially update Bicycle information.
         /// </summary>
         /// <param name="id">The value that is used to find Bicycle</param>
         /// <param name="patchDoc">The document with an array of operations for Bicycle with provided id</param>
-        /// <response code="204">Bicycle deleted successfully</response>
+        /// <response code="204">Bicycle updated successfully</response>
         /// <response code="400">Bicycle model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Bicycle with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPatch("{id}")]

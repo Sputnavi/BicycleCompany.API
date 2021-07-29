@@ -3,6 +3,7 @@ using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Request.RequestFeatures;
 using BicycleCompany.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
+    [Authorize(Roles = "Manager")]
     [Route("api/clients")]
     [ApiController]
     public class ClientsController : ControllerBase
@@ -28,8 +30,12 @@ namespace BicycleCompany.BLL.Controllers
         /// Return a list of all Clients.
         /// </summary>
         /// <response code="200">List of clients returned successfully</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientForReadModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [HttpHead]
@@ -45,9 +51,13 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find client</param>
         /// <response code="200">Client returned successfully</response> 
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientForReadModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}", Name = "GetClient")]
@@ -64,9 +74,13 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="client">The client object for creation</param>
         /// <response code="201">Client created successfully</response> 
         /// <response code="400">Client model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] ClientForCreateOrUpdateModel client)
@@ -83,9 +97,13 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find client</param>
         /// <response code="204">Client deleted successfully</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{id}")]
@@ -101,12 +119,16 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find client</param>
         /// <param name="client">The client object which is used for update client with provided id</param>
-        /// <response code="204">Client deleted successfully</response>
+        /// <response code="204">Client updated successfully</response>
         /// <response code="400">Client model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
@@ -124,12 +146,16 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="id">The value that is used to find client</param>
         /// <param name="patchDoc">The document with an array of operations for client with provided id</param>
-        /// <response code="204">Client deleted successfully</response>
+        /// <response code="204">Client updated successfully</response>
         /// <response code="400">Client model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPatch("{id}")]
@@ -162,8 +188,12 @@ namespace BicycleCompany.BLL.Controllers
         /// </summary>
         /// <param name="clientId">The value that is used to find client who has problems</param>
         /// <response code="200">List of problems returned successfully</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{clientId}/problems")]
         [HttpHead("{clientId}/problems")]
@@ -180,9 +210,13 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="clientId">The value that is used to find client who has a problem</param>
         /// <param name="problemId">The value that is used to find problem</param>
         /// <response code="200">Problem returned successfully</response> 
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{clientId}/problems/{problemId}", Name = "GetProblemForClient")]
@@ -193,7 +227,7 @@ namespace BicycleCompany.BLL.Controllers
             return Ok(problemEntity);
         }
 
-        
+
         /// <summary>
         /// Create new Problem for Client.
         /// </summary>
@@ -201,6 +235,8 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="problem">The problem object for creation</param>
         /// <response code="201">Problem created successfully</response> 
         /// <response code="400">Problem model is invalid</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -221,6 +257,8 @@ namespace BicycleCompany.BLL.Controllers
         /// <param name="clientId">The value that is used to find client whose problem should be deleted</param>
         /// <param name="problemId">The value that is used to find problem</param>
         /// <response code="204">Problem deleted successfully</response>
+        /// <response code="401">You need to authorize first</response>
+        /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="404">Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]

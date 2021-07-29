@@ -1,11 +1,9 @@
 using BicycleCompany.BLL.Extensions;
+using BicycleCompany.BLL.Services;
 using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.BLL.Utils;
-using BicycleCompany.DAL.Contracts;
-using BicycleCompany.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +30,10 @@ namespace BicycleCompany.BLL
 
             services.RegisterRepositories();
             services.RegisterServices();
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
+            services.AddAuthentication();
+            services.ConfigureJwt(Configuration);
             services.AddRazorPages();
             services.AddControllers()
                 .AddNewtonsoftJson();
@@ -55,6 +56,7 @@ namespace BicycleCompany.BLL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
