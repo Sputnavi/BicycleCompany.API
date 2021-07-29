@@ -72,6 +72,8 @@ namespace BicycleCompany.BLL.Extensions
         public static void ConfigureSwagger(this IServiceCollection services) =>
             services.AddSwaggerGen(c =>
             {
+                c.EnableAnnotations();
+
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",

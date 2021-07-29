@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
     [Authorize(Roles = "Manager, Master")]
+    [SwaggerTag("Manager, Master")]
     [Route("api/problems")]
     [ApiController]
     public class ProblemsController : ControllerBase
