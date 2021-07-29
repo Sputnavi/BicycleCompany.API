@@ -34,9 +34,9 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientForReadModel))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetClientList([FromQuery]ClientParameters clientParameters)
@@ -56,10 +56,10 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientForReadModel))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet("{id}", Name = "GetClient")]
         public async Task<IActionResult> GetClient(Guid id)
         {
@@ -77,11 +77,11 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="401">You need to authorize first</response>
         /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AddedResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] ClientForCreateOrUpdateModel client)
         {
@@ -102,10 +102,10 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(Guid id)
         {
@@ -126,11 +126,11 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForCreateOrUpdateModel client)
         {
@@ -153,11 +153,11 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Client with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpPatch("{id}")]
         public async Task<IActionResult> PartiallyUpdateClient(Guid id, 
             [FromBody] JsonPatchDocument<ClientForCreateOrUpdateModel> patchDoc)
@@ -192,9 +192,9 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet("{clientId}/problems")]
         [HttpHead("{clientId}/problems")]
         public async Task<IActionResult> GetProblemListForClient(Guid clientId, [FromQuery] ProblemParameters problemParameters)
@@ -215,10 +215,10 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProblemForReadModel))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet("{clientId}/problems/{problemId}", Name = "GetProblemForClient")]
         public async Task<IActionResult> GetProblemForClient(Guid clientId, Guid problemId)
         {
@@ -238,9 +238,9 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="401">You need to authorize first</response>
         /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AddedResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpPost("{clientId}/problems")]
         public async Task<IActionResult> CreateProblemForClient(Guid clientId, [FromBody] ProblemForCreateModel problem)
         {
@@ -262,8 +262,8 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="404">Problem with provided id cannot be found!</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpDelete("{clientId}/problems/{problemId}")]
         public async Task<IActionResult> DeleteProblemForClient(Guid clientId, Guid problemId)
         {

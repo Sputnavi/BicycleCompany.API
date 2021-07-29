@@ -1,5 +1,6 @@
 ﻿using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
+using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -26,9 +27,9 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="201">User registered successfully</response> 
         /// <response code="400">User data is invalid</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AddedResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationModel userForRegistration)
         {
@@ -44,9 +45,9 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="200">User authorized successfully</response> 
         /// <response code="401">User data is invalid</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationModel user)
         {
@@ -55,7 +56,7 @@ namespace BicycleCompany.BLL.Controllers
                 return Unauthorized();
             }
 
-            return Ok(new { Token = _authenticationManager.CreateToken() });
+            return Ok(new TokenResponseModel(_authenticationManager.CreateToken()));
         }
     }
 }
