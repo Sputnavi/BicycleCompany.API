@@ -29,7 +29,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationModel userForRegistration)
         {
             await _userService.CreateUserAsync(userForRegistration);
