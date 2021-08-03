@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BicycleCompany.DAL", "Bicyc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BicycleCompany.Models", "BicycleCompany.Models\BicycleCompany.Models.csproj", "{A060C977-F2C1-4E69-B820-3823F38915C6}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5705478C-6CAF-410A-8329-45E6FA4326F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A060C977-F2C1-4E69-B820-3823F38915C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A060C977-F2C1-4E69-B820-3823F38915C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A060C977-F2C1-4E69-B820-3823F38915C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5705478C-6CAF-410A-8329-45E6FA4326F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5705478C-6CAF-410A-8329-45E6FA4326F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5705478C-6CAF-410A-8329-45E6FA4326F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5705478C-6CAF-410A-8329-45E6FA4326F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL
         public RepositoryContext(DbContextOptions<RepositoryContext> options)
             : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         public DbSet<Bicycle> Bicycles { get; set; }
@@ -115,15 +115,29 @@ namespace BicycleCompany.DAL
                 {
                     Id = adminId,
                     Login = "Admin",
-                    Password = "pa55w0rd",
+                    Password = "Admin",
                     Role = "Administrator"
                 },
                 new User
                 {
                     Id = Guid.NewGuid(),
                     Login = "User",
-                    Password = "1234",
+                    Password = "User",
                     Role = null
+                },
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    Login = "Master",
+                    Password = "Master",
+                    Role = "Master"
+                },
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    Login = "Manager",
+                    Password = "Manager",
+                    Role = "Manager"
                 }
             );
         }
