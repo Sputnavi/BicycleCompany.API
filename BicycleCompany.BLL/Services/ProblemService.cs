@@ -28,10 +28,10 @@ namespace BicycleCompany.BLL.Services
         private readonly IBicycleService _bicycleService;
         private readonly IPartService _partService;
 
-        public ProblemService(IProblemRepository problemRepository, IPartDetailsRepository partProblemRepository, IClientService clientService, IBicycleService bicycleService, IMapper mapper, ILoggerManager logger, IPartService partService)
+        public ProblemService(IProblemRepository problemRepository, IPartDetailsRepository partDetailsRepository, IClientService clientService, IBicycleService bicycleService, IMapper mapper, ILoggerManager logger, IPartService partService)
         {
             _problemRepository = problemRepository;
-            _partDetailsRepository = partProblemRepository;
+            _partDetailsRepository = partDetailsRepository;
             _clientService = clientService;
             _bicycleService = bicycleService;
             _mapper = mapper;
@@ -62,9 +62,12 @@ namespace BicycleCompany.BLL.Services
             await _bicycleService.GetBicycleAsync(model.BicycleId);
             await _clientService.GetClientAsync(model.ClientId);
 
-            foreach (var part in model?.Parts)
+            if (model.Parts != null)
             {
-                await _partService.GetPartAsync(part.PartId);
+                foreach (var part in model.Parts)
+                {
+                    await _partService.GetPartAsync(part.PartId);
+                } 
             }
 
             var problemEntity = _mapper.Map<Problem>(model);
@@ -95,6 +98,7 @@ namespace BicycleCompany.BLL.Services
             _mapper.Map(model, problemEntity);
             await _problemRepository.UpdateProblemAsync(problemEntity);
         }
+
         public async Task<ProblemForUpdateModel> GetProblemForUpdateModelAsync(Guid problemId)
         {
             var problemEntity = await GetProblemAsync(problemId);
@@ -125,35 +129,35 @@ namespace BicycleCompany.BLL.Services
             return _mapper.Map<PartDetailsForReadModel>(part);
         }
 
-        public async Task<Guid> CreatePartForProblemAsync(Guid problemId, PartDetailsForCreateModel partProblem)
+        public async Task<Guid> CreatePartForProblemAsync(Guid problemId, PartDetailsForCreateModel partDetails)
         {
             var problemEntity = await GetProblemAsync(problemId);
-            if (problemEntity.Parts.Any(pp => pp.Part.Id.Equals(partProblem.PartId))) 
+            if (problemEntity.Parts.Any(pp => pp.Part.Id.Equals(partDetails.PartId))) 
             {
                 _logger.LogInfo("Same part for provided problem already exists!");
                 throw new ArgumentException($"Same part for provided problem already exists!");
             }
 
-            var partProblemEntity = _mapper.Map<PartDetails>(partProblem);
+            var partDetailsEntity = _mapper.Map<PartDetails>(partDetails);
 
-            partProblemEntity.ProblemId = problemId;
-            await _partDetailsRepository.CreatePartDetailAsync(partProblemEntity);
+            partDetailsEntity.ProblemId = problemId;
+            await _partDetailsRepository.CreatePartDetailAsync(partDetailsEntity);
 
-            return partProblemEntity.Id;
+            return partDetailsEntity.Id;
         }
 
         public async Task DeletePartForProblemAsync(Guid problemId, Guid partId)
         {
             await GetProblemAsync(problemId);
 
-            var partProblemEntity = await _partDetailsRepository.GetPartDetailAsync(problemId, partId);
-            if (partProblemEntity is null)
+            var partDetailsEntity = await _partDetailsRepository.GetPartDetailAsync(problemId, partId);
+            if (partDetailsEntity is null)
             {
                 _logger.LogInfo($"Part with id: {partId} doesn't exist for problem.");
                 throw new EntityNotFoundException("Part", partId);
             }
 
-            await _partDetailsRepository.DeletePartDetailAsync(partProblemEntity);
+            await _partDetailsRepository.DeletePartDetailAsync(partDetailsEntity);
         }
 
         private void CheckIfFound(Guid id, Problem problemEntity)

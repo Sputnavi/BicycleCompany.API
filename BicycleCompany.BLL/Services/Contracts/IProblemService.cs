@@ -19,7 +19,7 @@ namespace BicycleCompany.BLL.Services.Contracts
 
         Task<List<PartDetailsForReadModel>> GetPartListForProblemAsync(Guid problemId);
         Task<PartDetailsForReadModel> GetPartForProblemAsync(Guid problemId, Guid partId);
-        Task<Guid> CreatePartForProblemAsync(Guid problemId, PartDetailsForCreateModel partProblem);
-        Task DeletePartForProblemAsync(Guid problemId, Guid partProblemId);
+        Task<Guid> CreatePartForProblemAsync(Guid problemId, PartDetailsForCreateModel partDetails);
+        Task DeletePartForProblemAsync(Guid problemId, Guid partDetailsId);
     }
 }

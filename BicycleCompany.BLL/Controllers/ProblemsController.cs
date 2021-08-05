@@ -200,7 +200,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet("{problemId}/parts")]
-        public async Task<IActionResult> GetPartsForProblem(Guid problemId)
+        public async Task<IActionResult> GetPartListForProblem(Guid problemId)
         {
             var parts = await _problemService.GetPartListForProblemAsync(problemId);
 
@@ -223,7 +223,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet("{problemId}/parts/{partId}", Name = "GetPartForProblem")]
-        public async Task<IActionResult> GetPartsForProblem(Guid problemId, Guid partId)
+        public async Task<IActionResult> GetPartForProblem(Guid problemId, Guid partId)
         {
             var part = await _problemService.GetPartForProblemAsync(problemId, partId);
 
@@ -250,9 +250,11 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost("{problemId}/parts")]
         public async Task<IActionResult> CreatePartForProblem(Guid problemId, [FromBody] PartDetailsForCreateModel part)
         {
-            var partProblemId = await _problemService.CreatePartForProblemAsync(problemId, part);
+            this.ValidateObject();
 
-            return Created($"api/problems/{problemId}/parts/" + partProblemId, new AddedResponse(partProblemId));
+            var partDetailsId = await _problemService.CreatePartForProblemAsync(problemId, part);
+
+            return CreatedAtRoute("GetPartForProblem", new AddedResponse(partDetailsId));
         }
 
         /// <summary>

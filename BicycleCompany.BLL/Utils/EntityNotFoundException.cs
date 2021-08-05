@@ -12,5 +12,11 @@ namespace BicycleCompany.BLL.Utils
         {
 
         }
+
+        public EntityNotFoundException()
+            : base("Entity was not found!")
+        {
+
+        }
     }
 }

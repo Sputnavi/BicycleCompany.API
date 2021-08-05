@@ -16,16 +16,16 @@ namespace BicycleCompany.DAL.Repository
 
         }
 
-        public Task CreatePartDetailAsync(PartDetails partProblem) => CreateAsync(partProblem);
+        public Task CreatePartDetailAsync(PartDetails partDetails) => CreateAsync(partDetails);
 
-        public Task DeletePartDetailAsync(PartDetails partProblem) => DeleteAsync(partProblem);
+        public Task DeletePartDetailAsync(PartDetails partDetails) => DeleteAsync(partDetails);
 
         public async Task<PartDetails> GetPartDetailAsync(Guid problemId, Guid partId) =>
             await FindByCondition(pd => pd.ProblemId.Equals(problemId) && pd.PartId.Equals(partId))
                 .Include(pd => pd.Part)
                 .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<PartDetails>> GetPartDetailListAsync(Guid problemId)
+        public async Task<List<PartDetails>> GetPartDetailListAsync(Guid problemId)
         {
             var parts = await FindByCondition(pd => pd.ProblemId.Equals(problemId))
                 .Include(pd => pd.Part)
