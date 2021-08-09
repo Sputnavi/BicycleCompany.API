@@ -37,7 +37,6 @@ namespace BicycleCompany.BLL
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
-            services.AddAuthentication();
             services.ConfigureJwt(Configuration);
             services.AddRazorPages();
             services.AddControllers()
