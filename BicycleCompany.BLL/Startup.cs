@@ -48,7 +48,7 @@ namespace BicycleCompany.BLL
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.EnvironmentName == "Docker")
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();

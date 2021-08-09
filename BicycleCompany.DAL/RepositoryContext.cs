@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL
         public RepositoryContext(DbContextOptions<RepositoryContext> options)
             : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         public DbSet<Bicycle> Bicycles { get; set; }
