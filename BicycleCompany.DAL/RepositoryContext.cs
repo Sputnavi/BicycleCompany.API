@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL
         public RepositoryContext(DbContextOptions<RepositoryContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         public DbSet<Bicycle> Bicycles { get; set; }
@@ -36,9 +36,14 @@ namespace BicycleCompany.DAL
                     .HasForeignKey(k => k.PartId)
                 );
 
-            Guid clientId = new Guid("3B4E22BE-C10D-4303-BF57-03ECA2F13F2B");
-            Guid bicycleId = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD6");
-            Guid adminId = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48649");
+            modelBuilder.Entity<Bicycle>().HasAlternateKey(b => new { b.Name, b.Model });
+            modelBuilder.Entity<Part>().HasAlternateKey(p => p.Name);
+            modelBuilder.Entity<User>().HasAlternateKey(u => u.Login);
+
+
+            Guid bicycleId = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD0");
+            Guid clientId = new Guid("3B4E22BE-C10D-4303-BF57-03ECA2F13F20");
+            Guid adminId = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48640");
 
             modelBuilder.Entity<Bicycle>()
                 .HasData(
@@ -50,13 +55,13 @@ namespace BicycleCompany.DAL
                 },
                 new Bicycle
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD1"),
                     Name = "LTD",
                     Model = "Turbo"
                 },
                 new Bicycle
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD2"),
                     Name = "Aist",
                     Model = "Tango"
                 }
@@ -71,7 +76,7 @@ namespace BicycleCompany.DAL
                 },
                 new Client
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("3B4E22BE-C10D-4303-BF57-03ECA2F13F21"),
                     Name = "Andrew Vertuha"
                 }
             );
@@ -80,7 +85,7 @@ namespace BicycleCompany.DAL
                 .HasData(
                 new Problem
                 {
-                    Id = new Guid("F451E4EB-C5FC-4FF4-A751-57EEE391F9A7"),
+                    Id = new Guid("F451E4EB-C5FC-4FF4-A751-57EEE391F9A0"),
                     ClientId = clientId,
                     BicycleId = bicycleId,
                     Place = "Outside the city",
@@ -94,17 +99,17 @@ namespace BicycleCompany.DAL
                 .HasData(
                 new Part
                 {
-                    Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE5B"),
+                    Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE50"),
                     Name = "Seat"
                 },
                 new Part
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE51"),
                     Name = "Wheel"
                 },
                 new Part
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE52"),
                     Name = "Handlebar"
                 }
             );
@@ -120,21 +125,21 @@ namespace BicycleCompany.DAL
                 },
                 new User
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48641"),
                     Login = "User",
                     Password = "User",
                     Role = null
                 },
                 new User
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48642"),
                     Login = "Master",
                     Password = "Master",
                     Role = "Master"
                 },
                 new User
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48643"),
                     Login = "Manager",
                     Password = "Manager",
                     Role = "Manager"

@@ -21,7 +21,7 @@ namespace BicycleCompany.BLL.Extensions
     {
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
             services.AddDbContext<RepositoryContext>(opts =>
-                opts.UseSqlServer(configuration.GetConnectionString("dockerSqlConnection")));
+                opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddScoped<ILoggerManager, LoggerManager>();
