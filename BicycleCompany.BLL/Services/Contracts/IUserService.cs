@@ -12,7 +12,7 @@ namespace BicycleCompany.BLL.Services.Contracts
     {
         Task<List<UserForReadModel>> GetUserListAsync(UserParameters userParameters, HttpResponse response);
         Task<UserForReadModel> GetUserAsync(Guid id);
-        Task CreateUserAsync(UserForRegistrationModel userForRegistration);
+        Task<Guid> CreateUserAsync(UserForRegistrationModel userForRegistration);
         Task UpdateUserAsync(Guid id, UserForUpdateModel user);
         Task<UserForUpdateModel> GetUserForUpdateModelAsync(Guid id);
     }

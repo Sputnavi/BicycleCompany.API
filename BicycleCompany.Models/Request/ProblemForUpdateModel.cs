@@ -12,7 +12,7 @@ namespace BicycleCompany.Models.Request
         public string Place { get; set; }
 
         [Range(1, 3)]
-        public int Stage { get; set; }
+        public Stage Stage { get; set; }
 
         [MaxLength(250)]
         public string Description { get; set; }

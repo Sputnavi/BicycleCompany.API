@@ -32,6 +32,7 @@ namespace BicycleCompany.BLL
             services.RegisterRepositories();
             services.RegisterServices();
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<IPasswordManager, PasswordManager>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

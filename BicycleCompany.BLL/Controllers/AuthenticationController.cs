@@ -1,4 +1,5 @@
-﻿using BicycleCompany.BLL.Services.Contracts;
+﻿using BicycleCompany.BLL.Extensions;
+using BicycleCompany.BLL.Services.Contracts;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Http;
@@ -33,9 +34,11 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationModel userForRegistration)
         {
-            await _userService.CreateUserAsync(userForRegistration);
+            this.ValidateObject();
 
-            return StatusCode(201);
+            var userId = await _userService.CreateUserAsync(userForRegistration);
+
+            return Created("authentication/login", new AddedResponse(userId));
         }
 
         /// <summary>
@@ -51,6 +54,7 @@ namespace BicycleCompany.BLL.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationModel user)
         {
+            this.ValidateObject();
             if (!await _authenticationManager.ValidateUser(user))
             {
                 return Unauthorized();

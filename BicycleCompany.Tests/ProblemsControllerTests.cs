@@ -1,8 +1,6 @@
-using AutoMapper;
 using BicycleCompany.BLL.Controllers;
-using BicycleCompany.BLL.Mapping;
 using BicycleCompany.BLL.Services.Contracts;
-using BicycleCompany.BLL.Utils;
+using BicycleCompany.Models;
 using BicycleCompany.Models.Request;
 using BicycleCompany.Models.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +25,7 @@ namespace BicycleCompany.Tests
                     Description = "Very well",
                     Place = "Place",
                     ReceivingDate = new DateTime(2021, 7, 12),
-                    Stage = 0
+                    Stage = Stage.Received
                 },
                 new ProblemForReadModel
                 {
@@ -36,7 +34,7 @@ namespace BicycleCompany.Tests
                     Description = "Description",
                     Place = "Place 2",
                     ReceivingDate = new DateTime(2021, 7, 13),
-                    Stage = 1
+                    Stage = Stage.Received
                 }
             };
 

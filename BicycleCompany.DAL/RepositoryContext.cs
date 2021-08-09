@@ -120,28 +120,32 @@ namespace BicycleCompany.DAL
                 {
                     Id = adminId,
                     Login = "Admin",
-                    Password = "Admin",
+                    Password = "7aekCVlgVr2mHBSiG7j4oYFRcuVvuQpsx/LGoBEn+WY=", // Admin
+                    Salt = "U+c7ldHlOzDGQwkVtbo4rQ==",
                     Role = "Administrator"
                 },
                 new User
                 {
                     Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48641"),
                     Login = "User",
-                    Password = "User",
+                    Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=", // User
+                    Salt = "UZ87zCZbv7Xn1nh7n1riYQ==",
                     Role = null
                 },
                 new User
                 {
                     Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48642"),
                     Login = "Master",
-                    Password = "Master",
+                    Password = "Bf/97pp16vaCipEI2w/LM1P1XcP7WKVmSIT9XmpnbOo=", // Master
+                    Salt = "N1UVkH2kwLrs6aoEADLuGg==",
                     Role = "Master"
                 },
                 new User
                 {
                     Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48643"),
                     Login = "Manager",
-                    Password = "Manager",
+                    Password = "wjPHtXpNvhueKzcqH+dgfLG1Lfi/EpuYqARC/p9T25c=", // Manager
+                    Salt = "vm8TTiETaZAroOITxE6yJw==",
                     Role = "Manager"
                 }
             );
