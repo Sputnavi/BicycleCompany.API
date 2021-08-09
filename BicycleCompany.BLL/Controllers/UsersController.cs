@@ -129,10 +129,7 @@ namespace BicycleCompany.BLL.Controllers
             patchDoc.ApplyTo(userToPatch, ModelState);
 
             TryValidateModel(userToPatch);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            this.ValidateObject();
 
             await _userService.UpdateUserAsync(id, userToPatch);
 
