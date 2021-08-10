@@ -89,7 +89,7 @@ namespace BicycleCompany.DAL
                     ClientId = clientId,
                     BicycleId = bicycleId,
                     Place = "Outside the city",
-                    Stage = Stage.Received,
+                    Stage = Stage.New,
                     ReceivingDate = DateTime.Now,
                     Description = "The seat was broken in half"
                 }

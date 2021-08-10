@@ -25,7 +25,7 @@ namespace BicycleCompany.Tests
                     Description = "Very well",
                     Place = "Place",
                     ReceivingDate = new DateTime(2021, 7, 12),
-                    Stage = Stage.Received
+                    Stage = Stage.New
                 },
                 new ProblemForReadModel
                 {
@@ -34,7 +34,7 @@ namespace BicycleCompany.Tests
                     Description = "Description",
                     Place = "Place 2",
                     ReceivingDate = new DateTime(2021, 7, 13),
-                    Stage = Stage.Received
+                    Stage = Stage.New
                 }
             };
 

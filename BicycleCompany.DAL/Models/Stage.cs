@@ -2,7 +2,7 @@
 {
     public enum Stage
     {
-        Received,
+        New,
         OnTheWay,
         InProgress,
         Finished

@@ -9,7 +9,7 @@ namespace BicycleCompany.IntegrationTests.Utils
     {
         public static void InitializeDbForTests(RepositoryContext db)
         {
-            //db.Users.AddRange(GetSeedingUsers());
+            db.Users.AddRange(GetSeedingUsers());
             db.Bicycles.AddRange(GetSeedingBicycles());
             db.Clients.AddRange(GetSeedingClient());
 
@@ -38,29 +38,33 @@ namespace BicycleCompany.IntegrationTests.Utils
                 new User
                 {
                     Id = new Guid("5A17C699-6942-46C6-91EB-4E9843A186B0"),
-                    Login = "Admin",
-                    Password = "Admin",
+                    Login = "Admin1",
+                    Password = "7aekCVlgVr2mHBSiG7j4oYFRcuVvuQpsx/LGoBEn+WY=", // Admin
+                    Salt = "U+c7ldHlOzDGQwkVtbo4rQ==",
                     Role = "Administrator"
                 },
                 new User
                 {
                     Id = new Guid("5A17C699-6942-46C6-91EB-4E9843A186B1"),
-                    Login = "User",
-                    Password = "User",
+                    Login = "User1",
+                    Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=", // User
+                    Salt = "UZ87zCZbv7Xn1nh7n1riYQ==",
                     Role = null
                 },
                 new User
                 {
                     Id = new Guid("5A17C699-6942-46C6-91EB-4E9843A186B2"),
-                    Login = "Master",
-                    Password = "Master",
+                    Login = "Master1",
+                    Password = "Bf/97pp16vaCipEI2w/LM1P1XcP7WKVmSIT9XmpnbOo=", // Master
+                    Salt = "N1UVkH2kwLrs6aoEADLuGg==",
                     Role = "Master"
                 },
                 new User
                 {
                     Id = new Guid("5A17C699-6942-46C6-91EB-4E9843A186B3"),
-                    Login = "Manager",
-                    Password = "Manager",
+                    Login = "Manager1",
+                    Password = "wjPHtXpNvhueKzcqH+dgfLG1Lfi/EpuYqARC/p9T25c=", // Manager
+                    Salt = "vm8TTiETaZAroOITxE6yJw==",
                     Role = "Manager"
                 }
             };
@@ -76,7 +80,7 @@ namespace BicycleCompany.IntegrationTests.Utils
                     ClientId = new Guid("9EE78239-C83B-4B4C-BAA3-793A1906AA80"),
                     BicycleId = new Guid("44D8EDA9-BB8C-4339-97C0-20B9A186F0A0"),
                     Place = "Place 0",
-                    Stage = Stage.Received,
+                    Stage = Stage.New,
                     ReceivingDate = new DateTime(2021, 7, 12),
                     Description = "Description 0"
                 },
@@ -86,7 +90,7 @@ namespace BicycleCompany.IntegrationTests.Utils
                     ClientId = new Guid("9EE78239-C83B-4B4C-BAA3-793A1906AA81"),
                     BicycleId = new Guid("44D8EDA9-BB8C-4339-97C0-20B9A186F0A1"),
                     Place = "Place 1",
-                    Stage = Stage.Received,
+                    Stage = Stage.New,
                     ReceivingDate = new DateTime(2021, 7, 13),
                     Description = "Description 1",
                     Parts = parts
@@ -101,17 +105,17 @@ namespace BicycleCompany.IntegrationTests.Utils
                 new Part
                 {
                     Id = new Guid("C19B07D1-BCD8-4CDE-88C0-47CCBD3CC1B0"),
-                    Name = "Seat"
+                    Name = "Part1"
                 },
                 new Part
                 {
                     Id = new Guid("C19B07D1-BCD8-4CDE-88C0-47CCBD3CC1B1"),
-                    Name = "Wheel"
+                    Name = "Part2"
                 },
                 new Part
                 {
                     Id = new Guid("C19B07D1-BCD8-4CDE-88C0-47CCBD3CC1B2"),
-                    Name = "Handlebar"
+                    Name = "Part3"
                 }
             };
         }
@@ -123,12 +127,12 @@ namespace BicycleCompany.IntegrationTests.Utils
                 new Client
                 {
                     Id = new Guid("9EE78239-C83B-4B4C-BAA3-793A1906AA80"),
-                    Name = "John Doe"
+                    Name = "Client1"
                 },
                 new Client
                 {
                     Id = new Guid("9EE78239-C83B-4B4C-BAA3-793A1906AA81"),
-                    Name = "Andrew Vertuha"
+                    Name = "Client2"
                 }
             };
         }
@@ -140,20 +144,20 @@ namespace BicycleCompany.IntegrationTests.Utils
                 new Bicycle
                 {
                     Id = new Guid("44D8EDA9-BB8C-4339-97C0-20B9A186F0A0"),
-                    Name = "Aist",
-                    Model = "Turbo"
+                    Name = "Bicycle1",
+                    Model = "Model1"
                 },
                 new Bicycle
                 {
                     Id = new Guid("44D8EDA9-BB8C-4339-97C0-20B9A186F0A1"),
-                    Name = "Stels",
-                    Model = "Junior"
+                    Name = "Bicycle2",
+                    Model = "Model2"
                 },
                 new Bicycle
                 {
                     Id = new Guid("44D8EDA9-BB8C-4339-97C0-20B9A186F0A2"),
-                    Name = "Mustang",
-                    Model = "Quest"
+                    Name = "Bicycle3",
+                    Model = "Model3"
                 }
             };
         }
