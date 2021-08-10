@@ -17,13 +17,15 @@ namespace BicycleCompany.BLL.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IPasswordManager _passwordManager;
 
         private User _user;
 
-        public AuthenticationManager(IUserRepository userRepository, IConfiguration configuration)
+        public AuthenticationManager(IUserRepository userRepository, IConfiguration configuration, IPasswordManager passwordManager)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _passwordManager = passwordManager;
         }
 
         /// <summary>
@@ -53,7 +55,9 @@ namespace BicycleCompany.BLL.Services
         {
             _user = await _userRepository.GetUserByLoginAsync(userForAuthentication.Login);
 
-            return (_user != null && _user.Password == userForAuthentication.Password);
+            var providedPasswordHash = _passwordManager.GetPasswordHash(userForAuthentication.Password, _user.Salt);
+
+            return (_user != null && _user.Password == providedPasswordHash);
         }
 
         private SigningCredentials GetSigningCredentials()

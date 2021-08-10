@@ -51,6 +51,8 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<Guid> CreateBicycleAsync(BicycleForCreateOrUpdateModel model)
         {
+            await CheckIfAlreadyExists(model);
+
             var bicycleEntity = _mapper.Map<Bicycle>(model);
 
             await _bicycleRepository.CreateBicycleAsync(bicycleEntity);
@@ -68,6 +70,8 @@ namespace BicycleCompany.BLL.Services
 
         public async Task UpdateBicycleAsync(Guid id, BicycleForCreateOrUpdateModel model)
         {
+            await CheckIfAlreadyExists(model);
+
             var bicycleEntity = await _bicycleRepository.GetBicycleAsync(id);
             CheckIfFound(id, bicycleEntity);
 
@@ -88,6 +92,16 @@ namespace BicycleCompany.BLL.Services
             {
                 _logger.LogInfo($"Bicycle with id: {id} doesn't exist in the database.");
                 throw new EntityNotFoundException("Bicycle", id);
+            }
+        }
+
+        private async Task CheckIfAlreadyExists(BicycleForCreateOrUpdateModel model)
+        {
+            var bicycle = await _bicycleRepository.GetBicycleByNameAndModelAsync(model.Name, model.Model);
+            if (bicycle != null)
+            {
+                _logger.LogInfo("Bicycle with the same name and model already exists.");
+                throw new ArgumentException("Bicycle with the same name and model already exists.");
             }
         }
     }

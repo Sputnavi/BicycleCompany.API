@@ -19,12 +19,14 @@ namespace BicycleCompany.BLL.Services
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordManager _passwordManager;
 
-        public UserService(ILoggerManager logger, IMapper mapper, IUserRepository userRepository)
+        public UserService(ILoggerManager logger, IMapper mapper, IUserRepository userRepository, IPasswordManager passwordManager)
         {
             _logger = logger;
             _mapper = mapper;
             _userRepository = userRepository;
+            _passwordManager = passwordManager;
         }
 
         public async Task<List<UserForReadModel>> GetUserListAsync(UserParameters userParameters, HttpResponse response)
@@ -45,7 +47,7 @@ namespace BicycleCompany.BLL.Services
             return _mapper.Map<UserForReadModel>(userEntity);
         }
 
-        public async Task CreateUserAsync(UserForRegistrationModel userForRegistration)
+        public async Task<Guid> CreateUserAsync(UserForRegistrationModel userForRegistration)
         {
             var userEntity = await _userRepository.GetUserByLoginAsync(userForRegistration.Login);
             if (userEntity != null)
@@ -55,7 +57,13 @@ namespace BicycleCompany.BLL.Services
             }
 
             var user = _mapper.Map<User>(userForRegistration);
+
+            var salt = _passwordManager.GenerateSalt();
+            user.Password = _passwordManager.GetPasswordHash(userForRegistration.Password, salt);
+            user.Salt = salt;
+
             await _userRepository.CreateUserAsync(user);
+            return user.Id;
         }
 
 

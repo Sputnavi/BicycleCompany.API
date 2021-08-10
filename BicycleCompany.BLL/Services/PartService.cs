@@ -50,6 +50,8 @@ namespace BicycleCompany.BLL.Services
 
         public async Task<Guid> CreatePartAsync(PartForCreateOrUpdateModel model)
         {
+            await CheckIfAlreadyExists(model);
+
             var partEntity = _mapper.Map<Part>(model);
 
             await _partRepository.CreatePartAsync(partEntity);
@@ -68,6 +70,8 @@ namespace BicycleCompany.BLL.Services
 
         public async Task UpdatePartAsync(Guid id, PartForCreateOrUpdateModel model)
         {
+            await CheckIfAlreadyExists(model);
+
             var partEntity = await _partRepository.GetPartAsync(id);
             CheckIfFound(id, partEntity);
 
@@ -88,6 +92,16 @@ namespace BicycleCompany.BLL.Services
             {
                 _logger.LogInfo($"Part with id: {id} doesn't exist in the database.");
                 throw new EntityNotFoundException("Part", id);
+            }
+        }
+
+        private async Task CheckIfAlreadyExists(PartForCreateOrUpdateModel model)
+        {
+            var part = await _partRepository.GetPartByNameAsync(model.Name);
+            if (part != null)
+            {
+                _logger.LogInfo("Part with the same name already exists.");
+                throw new ArgumentException("Part with the same name already exists.");
             }
         }
     }

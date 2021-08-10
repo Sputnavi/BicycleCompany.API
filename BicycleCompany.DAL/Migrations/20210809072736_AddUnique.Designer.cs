@@ -4,14 +4,16 @@ using BicycleCompany.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BicycleCompany.DAL.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20210809072736_AddUnique")]
+    partial class AddUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,7 +194,7 @@ namespace BicycleCompany.DAL.Migrations
                             ClientId = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f20"),
                             Description = "The seat was broken in half",
                             Place = "Outside the city",
-                            ReceivingDate = new DateTime(2021, 8, 9, 12, 52, 19, 31, DateTimeKind.Local).AddTicks(4771),
+                            ReceivingDate = new DateTime(2021, 8, 9, 10, 27, 36, 419, DateTimeKind.Local).AddTicks(1325),
                             Stage = 0
                         });
                 });
@@ -210,16 +212,10 @@ namespace BicycleCompany.DAL.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(44)
-                        .HasColumnType("nvarchar(44)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Salt")
-                        .IsRequired()
-                        .HasMaxLength(24)
-                        .HasColumnType("nvarchar(24)");
 
                     b.HasKey("Id");
 
@@ -232,32 +228,28 @@ namespace BicycleCompany.DAL.Migrations
                         {
                             Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48640"),
                             Login = "Admin",
-                            Password = "7aekCVlgVr2mHBSiG7j4oYFRcuVvuQpsx/LGoBEn+WY=",
-                            Role = "Administrator",
-                            Salt = "U+c7ldHlOzDGQwkVtbo4rQ=="
+                            Password = "Admin",
+                            Role = "Administrator"
                         },
                         new
                         {
                             Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48641"),
                             Login = "User",
-                            Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=",
-                            Salt = "UZ87zCZbv7Xn1nh7n1riYQ=="
+                            Password = "User"
                         },
                         new
                         {
                             Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48642"),
                             Login = "Master",
-                            Password = "Bf/97pp16vaCipEI2w/LM1P1XcP7WKVmSIT9XmpnbOo=",
-                            Role = "Master",
-                            Salt = "N1UVkH2kwLrs6aoEADLuGg=="
+                            Password = "Master",
+                            Role = "Master"
                         },
                         new
                         {
                             Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48643"),
                             Login = "Manager",
-                            Password = "wjPHtXpNvhueKzcqH+dgfLG1Lfi/EpuYqARC/p9T25c=",
-                            Role = "Manager",
-                            Salt = "vm8TTiETaZAroOITxE6yJw=="
+                            Password = "Manager",
+                            Role = "Manager"
                         });
                 });
 

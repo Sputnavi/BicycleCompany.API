@@ -34,5 +34,8 @@ namespace BicycleCompany.DAL.Repository
 
             return PagedList<Bicycle>.ToPagedList(bicycles, bicycleParameters.PageNumber, bicycleParameters.PageSize);
         }
+        public async Task<Bicycle> GetBicycleByNameAndModelAsync(string name, string model) =>
+            await FindByCondition(b => b.Name.Equals(name) && b.Model.Equals(model))
+                .SingleOrDefaultAsync();
     }
 }

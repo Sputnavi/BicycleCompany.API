@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Administrator, Manager")]
     [SwaggerTag("Manager")]
     [Route("api/clients")]
     [ApiController]
@@ -175,10 +175,7 @@ namespace BicycleCompany.BLL.Controllers
             patchDoc.ApplyTo(clientToPatch, ModelState);
 
             TryValidateModel(clientToPatch);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            this.ValidateObject();
 
             await _clientService.UpdateClientAsync(id, clientToPatch);
 

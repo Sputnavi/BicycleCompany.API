@@ -12,8 +12,13 @@ namespace BicycleCompany.DAL.Models
         public string Login { get; set; }
 
         [Required]
+        [MaxLength(44)]
         public string Password { get; set; }
-        
+
+        [Required]
+        [MaxLength(24)]
+        public string Salt { get; set; }
+
         public string Role { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace BicycleCompany.Models.Response
 
         public string Place { get; set; }
 
-        public int Stage { get; set; }
+        public Stage Stage { get; set; }
 
         public string Description { get; set; }
 
