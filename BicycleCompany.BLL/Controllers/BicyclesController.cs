@@ -35,7 +35,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <response code="401">You need to authorize first</response>
         /// <response code="403">Your role dosn't have enough rights</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BicycleForReadModel[]))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
@@ -51,7 +51,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Return Bicycle.
         /// </summary>
-        /// <param name="id">The value that is used to find bicycle</param>
+        /// <param name="id" example="D9F9841A-AACF-4BC4-924C-04C46E8274F1">The value that is used to find bicycle</param>
         /// <response code="200">Bicycle returned successfully</response> 
         /// <response code="401">You need to authorize first</response>
         /// <response code="403">Your role dosn't have enough rights</response>
@@ -97,7 +97,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Delete Bicycle.
         /// </summary>
-        /// <param name="id">The value that is used to find Bicycle</param>
+        /// <param name="id" example="D9F9841A-AACF-4BC4-924C-04C46E8274F1">The value that is used to find Bicycle</param>
         /// <response code="204">Bicycle deleted successfully</response>
         /// <response code="401">You need to authorize first</response>
         /// <response code="403">Your role dosn't have enough rights</response>
@@ -119,7 +119,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Update Bicycle information.
         /// </summary>
-        /// <param name="id">The value that is used to find Bicycle</param>
+        /// <param name="id" example="D9F9841A-AACF-4BC4-924C-04C46E8274F1">The value that is used to find Bicycle</param>
         /// <param name="bicycle">The Bicycle object which is used for update Bicycle with provided id</param>
         /// <response code="204">Bicycle updated successfully</response>
         /// <response code="400">Bicycle model is invalid</response>
@@ -146,7 +146,7 @@ namespace BicycleCompany.BLL.Controllers
         /// <summary>
         /// Partially update Bicycle information.
         /// </summary>
-        /// <param name="id">The value that is used to find Bicycle</param>
+        /// <param name="id" example="D9F9841A-AACF-4BC4-924C-04C46E8274F1">The value that is used to find Bicycle</param>
         /// <param name="patchDoc">The document with an array of operations for Bicycle with provided id</param>
         /// <response code="204">Bicycle updated successfully</response>
         /// <response code="400">Bicycle model is invalid</response>
