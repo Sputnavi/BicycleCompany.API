@@ -143,7 +143,7 @@ namespace BicycleCompany.BLL.Services
             partDetailsEntity.ProblemId = problemId;
             await _partDetailsRepository.CreatePartDetailAsync(partDetailsEntity);
 
-            return partDetailsEntity.Id;
+            return partDetailsEntity.PartId;
         }
 
         public async Task DeletePartForProblemAsync(Guid problemId, Guid partId)

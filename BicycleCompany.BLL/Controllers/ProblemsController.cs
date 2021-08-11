@@ -91,7 +91,7 @@ namespace BicycleCompany.BLL.Controllers
 
             var problemId = await _problemService.CreateProblemAsync(problem);
 
-            return CreatedAtRoute("GetProblem", new { problemId = problemId }, new AddedResponse(problemId));
+            return CreatedAtRoute("GetProblem", new { problemId }, new AddedResponse(problemId));
         }
 
         /// <summary>
@@ -249,9 +249,9 @@ namespace BicycleCompany.BLL.Controllers
         {
             this.ValidateObject();
 
-            var partDetailsId = await _problemService.CreatePartForProblemAsync(problemId, part);
+            var partId = await _problemService.CreatePartForProblemAsync(problemId, part);
 
-            return CreatedAtRoute("GetPartForProblem", new AddedResponse(partDetailsId));
+            return CreatedAtRoute("GetPartForProblem", new { problemId, partId }, new AddedResponse(partId));
         }
 
         /// <summary>

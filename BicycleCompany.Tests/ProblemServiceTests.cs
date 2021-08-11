@@ -483,7 +483,7 @@ namespace BicycleCompany.Tests
             var fakePartDetailsRepository = new Mock<IPartDetailsRepository>();
             fakePartDetailsRepository
                 .Setup(r => r.CreatePartDetailAsync(It.IsAny<PartDetails>()))
-                    .Callback((PartDetails partDetails) => partDetails.Id = guid);
+                    .Callback((PartDetails partDetails) => partDetails.PartId = guid);
 
             var problemService = new ProblemService(fakeProblemRepository.Object,
                fakePartDetailsRepository.Object, null, null, _mapper, _loggerStub, null);
