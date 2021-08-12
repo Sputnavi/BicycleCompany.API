@@ -97,6 +97,19 @@ namespace BicycleCompany.IntegrationTests
         }
 
         [Fact]
+        public async Task GetProblem_ShouldReturnNotFound_WithInvalidId()
+        {
+            // Arrange
+            var problemId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.GetAsync("api/problems/" + problemId);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
         public async Task CreateProblem_ShouldReturnOk_WithValidObject()
         {
             // Arrange
@@ -155,6 +168,77 @@ namespace BicycleCompany.IntegrationTests
         }
 
         [Fact]
+        public async Task CreateProblem_ShouldReturnBadRequest_WithInvalidObject()
+        {
+            // Arrange
+            var problem = new ProblemForCreateModel();
+            var problemJson = JsonConvert.SerializeObject(problem);
+            var data = new StringContent(problemJson, Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/problems", data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task CreateProblem_ShouldReturnNotFound_WithInvalidBicycleId()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/clients");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var client = JsonConvert.DeserializeObject<List<ClientForReadModel>>(responseString)[0];
+
+            var problem = new ProblemForCreateModel()
+            {
+                BicycleId = Guid.NewGuid(),
+                ClientId = client.Id,
+                Description = "Test description",
+                Place = "Test place",
+            };
+            var problemJson = JsonConvert.SerializeObject(problem);
+            var data = new StringContent(problemJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PostAsync("api/problems", data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Bicycle");
+        }
+
+        [Fact]
+        public async Task CreateProblem_ShouldReturnNotFound_WithInvalidClientId()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/bicycles");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var bicycle = JsonConvert.DeserializeObject<List<BicycleForReadModel>>(responseString)[0];
+
+            var problem = new ProblemForCreateModel()
+            {
+                BicycleId = bicycle.Id,
+                ClientId = Guid.NewGuid(),
+                Description = "Test description",
+                Place = "Test place",
+            };
+            var problemJson = JsonConvert.SerializeObject(problem);
+            var data = new StringContent(problemJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PostAsync("api/problems", data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Client");
+        }
+
+        [Fact]
         public async Task DeleteProblem_ShouldReturnNoContent_WithValidId()
         {
             // Arrange
@@ -170,6 +254,19 @@ namespace BicycleCompany.IntegrationTests
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             response = await _client.GetAsync("api/problems/" + problemId);
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task DeleteProblem_ShouldReturnEntityNotFound_WithInvalidId()
+        {
+            // Arrange
+            var problemId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.DeleteAsync("api/problems/" + problemId);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -217,6 +314,66 @@ namespace BicycleCompany.IntegrationTests
                 problemResponse.Place.Should().Be(problemForUpdate.Place);
                 problemResponse.Stage.Should().Be(problemForUpdate.Stage);
             }
+        }
+
+        [Fact]
+        public async Task UpdateProblem_ShouldReturnNotFound_WithInvalidProblemId()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/bicycles");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var bicyle = JsonConvert.DeserializeObject<List<BicycleForReadModel>>(responseString)[0];
+
+            var problemId = Guid.NewGuid();
+
+            var problemForUpdate = new ProblemForUpdateModel()
+            {
+                BicycleId = bicyle.Id,
+                Description = "New description",
+                Place = "New Place",
+                Stage = Stage.InProgress
+            };
+
+            var problemForUpdateJson = JsonConvert.SerializeObject(problemForUpdate);
+            var data = new StringContent(problemForUpdateJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PutAsync("api/problems/" + problemId, data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Problem");
+        }
+
+        [Fact]
+        public async Task UpdateProblem_ShouldReturnNotFound_WithInvalidBicycleId()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/problems");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<List<ProblemForReadModel>>(responseString)[0].Id;
+
+            var problemForUpdate = new ProblemForUpdateModel()
+            {
+                BicycleId = Guid.NewGuid(),
+                Description = "New description",
+                Place = "New Place",
+                Stage = Stage.InProgress
+            };
+
+            var problemForUpdateJson = JsonConvert.SerializeObject(problemForUpdate);
+            var data = new StringContent(problemForUpdateJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PutAsync("api/problems/" + problemId, data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Bicycle");
         }
 
         [Fact]
@@ -269,6 +426,75 @@ namespace BicycleCompany.IntegrationTests
                 problemResponse.Place.Should().Be(Place);
                 problemResponse.Stage.Should().Be(Stage);
             }
+        }
+
+        [Fact]
+        public async Task PartiallyUpdateProblem_ShouldReturnNotFound_WithInvalidId()
+        {
+            // Arrange
+            var problemId = Guid.NewGuid();
+
+            var patchDoc = new JsonPatchDocument<ProblemForUpdateModel>();
+
+            var patchDocJson = JsonConvert.SerializeObject(patchDoc);
+            var data = new StringContent(patchDocJson, Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PatchAsync("api/problems/" + problemId, data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Problem");
+        }
+
+        [Fact]
+        public async Task PartiallyUpdateProblem_ShouldReturnBadRequest_WhenObjectNotValidAfterPatchDocument()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/problems");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<List<ProblemForReadModel>>(responseString)[0].Id;
+
+            var operations = new List<Operation<ProblemForUpdateModel>>()
+            {
+                new Operation<ProblemForUpdateModel>("replace", "/stage", null, Stage.New),
+                new Operation<ProblemForUpdateModel>("replace", "/description", null, new string('a', 1000)),
+            };
+            var patchDoc = new JsonPatchDocument<ProblemForUpdateModel>(operations, new DefaultContractResolver());
+
+            var patchDocJson = JsonConvert.SerializeObject(patchDoc);
+            var data = new StringContent(patchDocJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PatchAsync("api/problems/" + problemId, data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task PartiallyUpdateProblem_ShouldReturnBadRequest_WhenPatchDocumentIsNull()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/problems");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<List<ProblemForReadModel>>(responseString)[0].Id;
+
+            JsonPatchDocument<ProblemForUpdateModel> patchDoc = null;
+
+            var patchDocJson = JsonConvert.SerializeObject(patchDoc);
+            var data = new StringContent(patchDocJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PatchAsync("api/problems/" + problemId, data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("patch document");
         }
 
         [Fact]
@@ -325,7 +551,7 @@ namespace BicycleCompany.IntegrationTests
         }
 
         [Fact]
-        public async Task GetPartListForProblem_ShouldReturnOk_WithValidProblemIdAndPartId()
+        public async Task GetPartForProblem_ShouldReturnOk_WithValidProblemIdAndPartId()
         {
             // Arrange
             var response = await _client.GetAsync("api/bicycles");
@@ -375,6 +601,42 @@ namespace BicycleCompany.IntegrationTests
             var responsePartDetails = JsonConvert.DeserializeObject<PartDetailsForReadModel>(responseString);
             var responsePart = responsePartDetails.Part;
             responsePart.Should().BeEquivalentTo(part);
+        }
+
+        [Fact]
+        public async Task GetPartForProblem_ShouldReturnNotFound_WithInvalidProblemId()
+        {
+            // Arrange
+            var problemId = Guid.NewGuid();
+            var partId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.GetAsync($"api/problems/{problemId}/parts/{partId}");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Problem");
+        }
+
+        [Fact]
+        public async Task GetPartForProblem_ShouldReturnNotFound_WithInvalidPartId()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/problems");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<List<ProblemForReadModel>>(responseString)[0].Id;
+
+            var partId = Guid.NewGuid();
+
+            // Act
+            response = await _client.GetAsync($"api/problems/{problemId}/parts/{partId}");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Part");
         }
 
         [Fact]
@@ -442,6 +704,144 @@ namespace BicycleCompany.IntegrationTests
         }
 
         [Fact]
+        public async Task CreatePartForProblem_ShouldReturnNotFound_WithInvalidProblemId()
+        {
+            // Arrange
+            var partDetails = new PartDetailsForCreateModel()
+            {
+                PartId = Guid.NewGuid(),
+                Amount = 3
+            };
+
+            var partDetailJson = JsonConvert.SerializeObject(partDetails);
+            var data = new StringContent(partDetailJson, Encoding.UTF8, "application/json");
+
+            var problemId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.PostAsync($"api/problems/{problemId}/parts", data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Problem");
+        }
+
+        [Fact]
+        public async Task CreatePartForProblem_ShouldReturnBadRequest_WithInvalidObject()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/bicycles");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var bicycle = JsonConvert.DeserializeObject<List<BicycleForReadModel>>(responseString)[0];
+
+            response = await _client.GetAsync("api/clients");
+            response.EnsureSuccessStatusCode();
+            responseString = await response.Content.ReadAsStringAsync();
+            var client = JsonConvert.DeserializeObject<List<ClientForReadModel>>(responseString)[0];
+
+            response = await _client.GetAsync("api/parts");
+            response.EnsureSuccessStatusCode();
+            responseString = await response.Content.ReadAsStringAsync();
+            var parts = JsonConvert.DeserializeObject<List<PartForReadModel>>(responseString)
+                .Where(p => p.Name.Contains("Part"));
+            var part = parts.FirstOrDefault();
+            var partDetails = new PartDetailsForCreateModel()
+            {
+                PartId = part.Id,
+                Amount = 0
+            };
+
+            var problem = new ProblemForCreateModel()
+            {
+                BicycleId = bicycle.Id,
+                ClientId = client.Id,
+                Description = "Test description",
+                Place = "Test place",
+            };
+            var problemJson = JsonConvert.SerializeObject(problem);
+            var data = new StringContent(problemJson, Encoding.UTF8, "application/json");
+
+            response = await _client.PostAsync("api/problems", data);
+            response.StatusCode.Should().Be(HttpStatusCode.Created, "because POST should work correct");
+
+            responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<AddedResponse>(responseString).Id;
+
+            var partDetailJson = JsonConvert.SerializeObject(partDetails);
+            data = new StringContent(partDetailJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PostAsync($"api/problems/{problemId}/parts", data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task CreatePartForProblem_ShouldReturnBadRequest_WhenSamePartAlreadyAdded()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/bicycles");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var bicycle = JsonConvert.DeserializeObject<List<BicycleForReadModel>>(responseString)[0];
+
+            response = await _client.GetAsync("api/clients");
+            response.EnsureSuccessStatusCode();
+            responseString = await response.Content.ReadAsStringAsync();
+            var client = JsonConvert.DeserializeObject<List<ClientForReadModel>>(responseString)[0];
+
+            response = await _client.GetAsync("api/parts");
+            response.EnsureSuccessStatusCode();
+            responseString = await response.Content.ReadAsStringAsync();
+            var parts = JsonConvert.DeserializeObject<List<PartForReadModel>>(responseString)
+                .Where(p => p.Name.Contains("Part"));
+            var part = parts.FirstOrDefault();
+            var partDetails = new PartDetailsForCreateModel()
+            {
+                PartId = part.Id,
+                Amount = 1
+            };
+
+            var problem = new ProblemForCreateModel()
+            {
+                BicycleId = bicycle.Id,
+                ClientId = client.Id,
+                Description = "Test description",
+                Place = "Test place",
+                Parts = new List<PartDetailsForCreateModel>
+                {
+                    new PartDetailsForCreateModel()
+                    {
+                        PartId = part.Id,
+                        Amount = 2
+                    }
+                }
+            };
+            var problemJson = JsonConvert.SerializeObject(problem);
+            var data = new StringContent(problemJson, Encoding.UTF8, "application/json");
+
+            response = await _client.PostAsync("api/problems", data);
+            response.StatusCode.Should().Be(HttpStatusCode.Created, "because POST should work correct");
+
+            responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<AddedResponse>(responseString).Id;
+
+            var partDetailJson = JsonConvert.SerializeObject(partDetails);
+            data = new StringContent(partDetailJson, Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PostAsync($"api/problems/{problemId}/parts", data);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Same");
+        }
+
+        [Fact]
         public async Task DeletePartForProblem_ShouldReturnNoContent_WithValidId()
         {
             // Arrange
@@ -486,6 +886,63 @@ namespace BicycleCompany.IntegrationTests
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
             response = await _client.GetAsync($"api/problems/{problemId}/parts/{part.Id}");
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task DeletePartForProblem_ShouldReturnNotFound_WithInvalidProblemId()
+        {
+            // Arrange
+            var problemId = Guid.NewGuid();
+            var partId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.DeleteAsync($"api/problems/{problemId}/parts/{partId}");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Problem");
+        }
+
+        [Fact]
+        public async Task DeletePartForProblem_ShouldReturnNotFound_WithInvalidPartId()
+        {
+            // Arrange
+            var response = await _client.GetAsync("api/bicycles");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var bicycle = JsonConvert.DeserializeObject<List<BicycleForReadModel>>(responseString)[0];
+
+            response = await _client.GetAsync("api/clients");
+            response.EnsureSuccessStatusCode();
+            responseString = await response.Content.ReadAsStringAsync();
+            var client = JsonConvert.DeserializeObject<List<ClientForReadModel>>(responseString)[0];
+
+            var problem = new ProblemForCreateModel()
+            {
+                BicycleId = bicycle.Id,
+                ClientId = client.Id,
+                Description = "Test description",
+                Place = "Test place",
+            };
+            var problemJson = JsonConvert.SerializeObject(problem);
+            var data = new StringContent(problemJson, Encoding.UTF8, "application/json");
+
+            response = await _client.PostAsync("api/problems", data);
+            response.StatusCode.Should().Be(HttpStatusCode.Created, "because POST should work correct");
+
+            responseString = await response.Content.ReadAsStringAsync();
+            var problemId = JsonConvert.DeserializeObject<AddedResponse>(responseString).Id;
+
+            var partId = Guid.NewGuid();
+
+            // Act
+            response = await _client.DeleteAsync($"api/problems/{problemId}/parts/{partId}");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().Contain("Part");
         }
     }
 }
