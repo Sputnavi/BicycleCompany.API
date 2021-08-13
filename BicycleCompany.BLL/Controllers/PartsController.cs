@@ -39,6 +39,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [AllowAnonymous]
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetPartList([FromQuery]PartParameters partParameters)
@@ -62,6 +63,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "GetPart")]
         public async Task<IActionResult> GetPart(Guid id)
         {

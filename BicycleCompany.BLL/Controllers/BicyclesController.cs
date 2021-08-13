@@ -39,6 +39,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [AllowAnonymous]
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetBicycleList([FromQuery]BicycleParameters bicycleParameters)
@@ -63,6 +64,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
         [HttpGet("{id}", Name = "GetBicycle")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetBicycle(Guid id)
         {
             var bicycleEntity = await _bicycleService.GetBicycleAsync(id);

@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
-    [Authorize(Roles = "Administrator, Manager")]
-    [SwaggerTag("Manager")]
+    [Authorize(Roles = "Administrator, Master")]
+    [SwaggerTag("Master")]
     [Route("api/clients")]
     [ApiController]
     public class ClientsController : ControllerBase
