@@ -61,6 +61,7 @@ namespace BicycleCompany.BLL.Services
             var salt = _passwordManager.GenerateSalt();
             user.Password = _passwordManager.GetPasswordHash(userForRegistration.Password, salt);
             user.Salt = salt;
+            user.Role = "User";
 
             await _userRepository.CreateUserAsync(user);
             return user.Id;

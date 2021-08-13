@@ -19,6 +19,10 @@ namespace BicycleCompany.DAL.Models
         [MaxLength(24)]
         public string Salt { get; set; }
 
+        [Required]
+        [MaxLength(30)]
         public string Role { get; set; }
+
+        public Client Client { get; set; }
     }
 }

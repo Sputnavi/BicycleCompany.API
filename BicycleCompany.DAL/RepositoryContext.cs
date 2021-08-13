@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL
         public RepositoryContext(DbContextOptions<RepositoryContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         public DbSet<Bicycle> Bicycles { get; set; }
@@ -40,10 +40,37 @@ namespace BicycleCompany.DAL
             modelBuilder.Entity<Part>().HasAlternateKey(p => p.Name);
             modelBuilder.Entity<User>().HasAlternateKey(u => u.Login);
 
-
             Guid bicycleId = new Guid("0EA19DCD-17FF-4284-BF9D-D9CCF7C15FD0");
             Guid clientId = new Guid("3B4E22BE-C10D-4303-BF57-03ECA2F13F20");
             Guid adminId = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48640");
+
+            modelBuilder.Entity<User>()
+                .HasData(
+                new User
+                {
+                    Id = adminId,
+                    Login = "Admin",
+                    Password = "7aekCVlgVr2mHBSiG7j4oYFRcuVvuQpsx/LGoBEn+WY=", // Admin
+                    Salt = "U+c7ldHlOzDGQwkVtbo4rQ==",
+                    Role = "Administrator"
+                },
+                new User
+                {
+                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48641"),
+                    Login = "User",
+                    Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=", // User
+                    Salt = "UZ87zCZbv7Xn1nh7n1riYQ==",
+                    Role = "User"
+                },
+                new User
+                {
+                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48642"),
+                    Login = "Master",
+                    Password = "Bf/97pp16vaCipEI2w/LM1P1XcP7WKVmSIT9XmpnbOo=", // Master
+                    Salt = "N1UVkH2kwLrs6aoEADLuGg==",
+                    Role = "Master"
+                }
+            );
 
             modelBuilder.Entity<Bicycle>()
                 .HasData(
@@ -111,42 +138,6 @@ namespace BicycleCompany.DAL
                 {
                     Id = new Guid("8CC08FCB-1FDB-4353-8540-DDE0B1FCCE52"),
                     Name = "Handlebar"
-                }
-            );
-
-            modelBuilder.Entity<User>()
-                .HasData(
-                new User
-                {
-                    Id = adminId,
-                    Login = "Admin",
-                    Password = "7aekCVlgVr2mHBSiG7j4oYFRcuVvuQpsx/LGoBEn+WY=", // Admin
-                    Salt = "U+c7ldHlOzDGQwkVtbo4rQ==",
-                    Role = "Administrator"
-                },
-                new User
-                {
-                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48641"),
-                    Login = "User",
-                    Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=", // User
-                    Salt = "UZ87zCZbv7Xn1nh7n1riYQ==",
-                    Role = null
-                },
-                new User
-                {
-                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48642"),
-                    Login = "Master",
-                    Password = "Bf/97pp16vaCipEI2w/LM1P1XcP7WKVmSIT9XmpnbOo=", // Master
-                    Salt = "N1UVkH2kwLrs6aoEADLuGg==",
-                    Role = "Master"
-                },
-                new User
-                {
-                    Id = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48643"),
-                    Login = "Manager",
-                    Password = "wjPHtXpNvhueKzcqH+dgfLG1Lfi/EpuYqARC/p9T25c=", // Manager
-                    Salt = "vm8TTiETaZAroOITxE6yJw==",
-                    Role = "Manager"
                 }
             );
         }

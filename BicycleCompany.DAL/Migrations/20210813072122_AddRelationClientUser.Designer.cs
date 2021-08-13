@@ -4,14 +4,16 @@ using BicycleCompany.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BicycleCompany.DAL.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20210813072122_AddRelationClientUser")]
+    partial class AddRelationClientUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,7 +201,7 @@ namespace BicycleCompany.DAL.Migrations
                             ClientId = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f20"),
                             Description = "The seat was broken in half",
                             Place = "Outside the city",
-                            ReceivingDate = new DateTime(2021, 8, 13, 12, 30, 0, 387, DateTimeKind.Local).AddTicks(350),
+                            ReceivingDate = new DateTime(2021, 8, 13, 10, 21, 19, 756, DateTimeKind.Local).AddTicks(6411),
                             Stage = 0
                         });
                 });
@@ -221,9 +223,7 @@ namespace BicycleCompany.DAL.Migrations
                         .HasColumnType("nvarchar(44)");
 
                     b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salt")
                         .IsRequired()
@@ -250,7 +250,6 @@ namespace BicycleCompany.DAL.Migrations
                             Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48641"),
                             Login = "User",
                             Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=",
-                            Role = "User",
                             Salt = "UZ87zCZbv7Xn1nh7n1riYQ=="
                         },
                         new
