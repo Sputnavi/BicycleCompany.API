@@ -9,7 +9,7 @@ namespace BicycleCompany.DAL
         public RepositoryContext(DbContextOptions<RepositoryContext> options)
             : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         public DbSet<Bicycle> Bicycles { get; set; }
@@ -99,7 +99,8 @@ namespace BicycleCompany.DAL
                 new Client
                 {
                     Id = clientId,
-                    Name = "John Doe"
+                    Name = "John Doe",
+                    UserId = new Guid("677F9E56-7CCB-4CBF-BB46-1C38A0D48641")
                 },
                 new Client
                 {

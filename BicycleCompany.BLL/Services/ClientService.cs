@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Services
@@ -48,10 +49,15 @@ namespace BicycleCompany.BLL.Services
             return _mapper.Map<List<ClientForReadModel>>(clients);
         }
 
-        public async Task<ClientForReadModel> GetClientAsync(Guid id)
+        public async Task<ClientForReadModel> GetClientAsync(Guid id, ClaimsPrincipal user = null)
         {
             var clientEntity = await _clientRepository.GetClientAsync(id);
             CheckIfFound(id, clientEntity);
+            if (user != null && user.IsInRole("User") && clientEntity.UserId != Guid.Parse(user.Identity.Name))
+            {
+                _logger.LogInfo("You don't have permission to access");
+                throw new ForbiddenException();
+            }
             return _mapper.Map<ClientForReadModel>(clientEntity);
         }
 
@@ -107,9 +113,9 @@ namespace BicycleCompany.BLL.Services
             }
         }
 
-        public async Task<List<ProblemForReadModel>> GetProblemListForClientAsync(Guid clientId, ProblemParameters problemParameters, HttpResponse response = null)
+        public async Task<List<ProblemForReadModel>> GetProblemListForClientAsync(Guid clientId, ProblemParameters problemParameters, ClaimsPrincipal user, HttpResponse response = null)
         {
-            await GetClientAsync(clientId);
+            await GetClientAsync(clientId, user);
             var problems = await _problemRepository.GetProblemListForClientAsync(clientId, problemParameters);
 
             if (response != null)
@@ -120,9 +126,9 @@ namespace BicycleCompany.BLL.Services
             return _mapper.Map<List<ProblemForReadModel>>(problems);
         }
 
-        public async Task<ProblemForReadModel> GetProblemForClientAsync(Guid clientId, Guid problemId)
+        public async Task<ProblemForReadModel> GetProblemForClientAsync(Guid clientId, Guid problemId, ClaimsPrincipal user)
         {
-            await GetClientAsync(clientId);
+            await GetClientAsync(clientId, user);
 
             var problemEntity = await _problemRepository.GetProblemForClientAsync(clientId, problemId);
             CheckIfFound(problemId, problemEntity);

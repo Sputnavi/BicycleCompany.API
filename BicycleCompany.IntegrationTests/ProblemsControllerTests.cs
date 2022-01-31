@@ -289,7 +289,6 @@ namespace BicycleCompany.IntegrationTests
                 BicycleId = bicyle.Id,
                 Description = "New description",
                 Place = "New Place",
-                Stage = Stage.InProgress
             };
 
             var problemForUpdateJson = JsonConvert.SerializeObject(problemForUpdate);
@@ -312,7 +311,6 @@ namespace BicycleCompany.IntegrationTests
                 problemResponse.Bicycle.Id.Should().Be(problemForUpdate.BicycleId);
                 problemResponse.Description.Should().Be(problemForUpdate.Description);
                 problemResponse.Place.Should().Be(problemForUpdate.Place);
-                problemResponse.Stage.Should().Be(problemForUpdate.Stage);
             }
         }
 
@@ -332,7 +330,6 @@ namespace BicycleCompany.IntegrationTests
                 BicycleId = bicyle.Id,
                 Description = "New description",
                 Place = "New Place",
-                Stage = Stage.InProgress
             };
 
             var problemForUpdateJson = JsonConvert.SerializeObject(problemForUpdate);
@@ -361,7 +358,6 @@ namespace BicycleCompany.IntegrationTests
                 BicycleId = Guid.NewGuid(),
                 Description = "New description",
                 Place = "New Place",
-                Stage = Stage.InProgress
             };
 
             var problemForUpdateJson = JsonConvert.SerializeObject(problemForUpdate);
@@ -382,7 +378,6 @@ namespace BicycleCompany.IntegrationTests
             // Arrange
             const string Description = "patch description";
             const string Place = "patch place";
-            const Stage Stage = Stage.OnTheWay;
 
             var response = await _client.GetAsync("api/bicycles");
             response.EnsureSuccessStatusCode();
@@ -399,7 +394,6 @@ namespace BicycleCompany.IntegrationTests
             {
                 new Operation<ProblemForUpdateModel>("replace", "/description", null, Description),
                 new Operation<ProblemForUpdateModel>("replace", "/place", null, Place),
-                new Operation<ProblemForUpdateModel>("replace", "/stage", null, Stage),
                 new Operation<ProblemForUpdateModel>("replace", "/bicycleId", null, bicycleId.ToString()),
             };
             var patchDoc = new JsonPatchDocument<ProblemForUpdateModel>(operations, new DefaultContractResolver());
@@ -424,7 +418,6 @@ namespace BicycleCompany.IntegrationTests
                 problemResponse.Bicycle.Id.Should().Be(bicycleId);
                 problemResponse.Description.Should().Be(Description);
                 problemResponse.Place.Should().Be(Place);
-                problemResponse.Stage.Should().Be(Stage);
             }
         }
 
@@ -459,7 +452,6 @@ namespace BicycleCompany.IntegrationTests
 
             var operations = new List<Operation<ProblemForUpdateModel>>()
             {
-                new Operation<ProblemForUpdateModel>("replace", "/stage", null, Stage.New),
                 new Operation<ProblemForUpdateModel>("replace", "/description", null, new string('a', 1000)),
             };
             var patchDoc = new JsonPatchDocument<ProblemForUpdateModel>(operations, new DefaultContractResolver());

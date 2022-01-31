@@ -12,6 +12,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.Tests
@@ -191,7 +192,7 @@ namespace BicycleCompany.Tests
             bicycleServiceStub.Setup(b => b.GetBicycleAsync(It.IsAny<Guid>()));
 
             var clientServiceStub = new Mock<IClientService>();
-            clientServiceStub.Setup(c => c.GetClientAsync(It.IsAny<Guid>()));
+            clientServiceStub.Setup(c => c.GetClientAsync(It.IsAny<Guid>(), It.IsAny<ClaimsPrincipal>()));
 
             var partServiceStub = new Mock<IPartService>();
             partServiceStub.Setup(c => c.GetPartAsync(It.IsAny<Guid>()));
@@ -220,7 +221,7 @@ namespace BicycleCompany.Tests
 
             var clientServiceStub = new Mock<IClientService>();
             clientServiceStub
-                .Setup(c => c.GetClientAsync(It.IsAny<Guid>()))
+                .Setup(c => c.GetClientAsync(It.IsAny<Guid>(), It.IsAny<ClaimsPrincipal>()))
                 .Throws(new EntityNotFoundException());
 
             var partServiceStub = new Mock<IPartService>();

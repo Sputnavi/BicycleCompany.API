@@ -26,6 +26,10 @@ namespace BicycleCompany.BLL.Utils
             {
                 await HandleExceptionAsync(context, ex.Message, HttpStatusCode.NotFound);
             }
+            catch (ForbiddenException ex)
+            {
+                await HandleExceptionAsync(context, ex.Message, HttpStatusCode.Forbidden);
+            }
             catch (ArgumentException ex)
             {
                 await HandleExceptionAsync(context, ex.Message, HttpStatusCode.BadRequest);

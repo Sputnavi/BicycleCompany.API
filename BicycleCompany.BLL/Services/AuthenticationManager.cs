@@ -72,7 +72,7 @@ namespace BicycleCompany.BLL.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, _user.Login)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, _user.Id.ToString())
             };
 
             if (_user.Role != null)

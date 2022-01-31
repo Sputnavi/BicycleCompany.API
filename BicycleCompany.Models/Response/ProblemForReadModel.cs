@@ -7,6 +7,8 @@ namespace BicycleCompany.Models.Response
     {
         public Guid Id { get; set; }
 
+        public ClientForReadModel Client { get; set; }
+
         public BicycleForReadModel Bicycle { get; set; }
 
         public DateTime ReceivingDate { get; set; }

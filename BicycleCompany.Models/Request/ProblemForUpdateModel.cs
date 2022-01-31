@@ -11,9 +11,6 @@ namespace BicycleCompany.Models.Request
         [MaxLength(200)]
         public string Place { get; set; }
 
-        [Range(1, 3)]
-        public Stage Stage { get; set; }
-
         [MaxLength(250)]
         public string Description { get; set; }
     }

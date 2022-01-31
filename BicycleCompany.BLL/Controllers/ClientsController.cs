@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace BicycleCompany.BLL.Controllers
 {
-    [Authorize(Roles = "Administrator, Master")]
     [SwaggerTag("Master")]
     [Route("api/clients")]
     [ApiController]
@@ -39,6 +38,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetClientList([FromQuery]ClientParameters clientParameters)
@@ -62,10 +62,11 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master, User")]
         [HttpGet("{id}", Name = "GetClient")]
         public async Task<IActionResult> GetClient(Guid id)
         {
-            var clientEntity = await _clientService.GetClientAsync(id);
+            var clientEntity = await _clientService.GetClientAsync(id, User);
 
             return Ok(clientEntity);
         }
@@ -84,6 +85,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] ClientForCreateOrUpdateModel client)
         {
@@ -108,6 +110,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(Guid id)
         {
@@ -133,6 +136,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClient(Guid id, [FromBody] ClientForCreateOrUpdateModel client)
         {
@@ -160,6 +164,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> PartiallyUpdateClient(Guid id, 
             [FromBody] JsonPatchDocument<ClientForCreateOrUpdateModel> patchDoc)
@@ -194,11 +199,12 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master, User")]
         [HttpGet("{clientId}/problems")]
         [HttpHead("{clientId}/problems")]
         public async Task<IActionResult> GetProblemListForClient(Guid clientId, [FromQuery] ProblemParameters problemParameters)
         {
-            var problems = await _clientService.GetProblemListForClientAsync(clientId, problemParameters, Response);
+            var problems = await _clientService.GetProblemListForClientAsync(clientId, problemParameters, User, Response);
 
             return Ok(problems);
         }
@@ -218,10 +224,11 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master, User")]
         [HttpGet("{clientId}/problems/{problemId}", Name = "GetProblemForClient")]
         public async Task<IActionResult> GetProblemForClient(Guid clientId, Guid problemId)
         {
-            var problemEntity = await _clientService.GetProblemForClientAsync(clientId, problemId);
+            var problemEntity = await _clientService.GetProblemForClientAsync(clientId, problemId, User);
 
             return Ok(problemEntity);
         }
@@ -240,6 +247,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AddedResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpPost("{clientId}/problems")]
         public async Task<IActionResult> CreateProblemForClient(Guid clientId, [FromBody] ProblemForCreateModel problem)
         {
@@ -263,6 +271,7 @@ namespace BicycleCompany.BLL.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponseModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponseModel))]
+        [Authorize(Roles = "Administrator, Master")]
         [HttpDelete("{clientId}/problems/{problemId}")]
         public async Task<IActionResult> DeleteProblemForClient(Guid clientId, Guid problemId)
         {
