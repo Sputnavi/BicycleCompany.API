@@ -115,6 +115,8 @@ namespace BicycleCompany.BLL.Extensions
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+                var xmlFile2 = @"\BicycleCompany.Models.xml";
+                c.IncludeXmlComments(AppDomain.CurrentDomain.BaseDirectory + xmlFile2);
             });
     }
 }
