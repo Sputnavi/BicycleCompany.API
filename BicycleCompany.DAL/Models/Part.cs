@@ -13,5 +13,6 @@ namespace BicycleCompany.DAL.Models
         public string Name { get; set; }
 
         public List<Problem> Problems { get; set; }
+        public List<PartDetails> PartDetails { get; set; }
     }
 }

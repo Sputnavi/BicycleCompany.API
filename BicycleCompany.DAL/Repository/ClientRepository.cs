@@ -1,9 +1,9 @@
 ﻿using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
+using BicycleCompany.DAL.Repository.Extensions;
+using BicycleCompany.Models.Request.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
@@ -20,12 +20,19 @@ namespace BicycleCompany.DAL.Repository
 
         public Task DeleteClientAsync(Client client) => DeleteAsync(client);
 
-        public async Task<Client> GetClientAsync(Guid id, bool trackChanges) => 
-            await FindByCondition(c => c.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
+        public Task UpdateClientAsync(Client client) => UpdateAsync(client);
 
-        public async Task<IEnumerable<Client>> GetClientsAsync(bool trackChanges) => 
-            await FindAll(trackChanges)
-            .OrderBy(c => c.Name)
-            .ToListAsync();
+        public async Task<Client> GetClientAsync(Guid id) => 
+            await FindByCondition(c => c.Id.Equals(id)).SingleOrDefaultAsync();
+
+        public async Task<PagedList<Client>> GetClientListAsync(ClientParameters clientParameters)
+        {
+            var clients = await FindAll()
+                .Search(clientParameters.SearchTerm)
+                .Sort(clientParameters.OrderBy)
+                .ToListAsync();
+
+            return PagedList<Client>.ToPagedList(clients, clientParameters.PageNumber, clientParameters.PageSize);
+        }
     }
 }

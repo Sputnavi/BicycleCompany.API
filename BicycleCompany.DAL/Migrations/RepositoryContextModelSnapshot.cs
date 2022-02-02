@@ -37,24 +37,26 @@ namespace BicycleCompany.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name", "Model");
+
                     b.ToTable("Bicycles");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0ea19dcd-17ff-4284-bf9d-d9ccf7c15fd6"),
+                            Id = new Guid("0ea19dcd-17ff-4284-bf9d-d9ccf7c15fd0"),
                             Model = "Rocco",
                             Name = "Stels"
                         },
                         new
                         {
-                            Id = new Guid("2e91f598-cb6a-4833-8317-07b41a111d4f"),
+                            Id = new Guid("0ea19dcd-17ff-4284-bf9d-d9ccf7c15fd1"),
                             Model = "Turbo",
                             Name = "LTD"
                         },
                         new
                         {
-                            Id = new Guid("8f0666aa-453e-4372-a4fb-aa4d77b21d78"),
+                            Id = new Guid("0ea19dcd-17ff-4284-bf9d-d9ccf7c15fd2"),
                             Model = "Tango",
                             Name = "Aist"
                         });
@@ -78,12 +80,12 @@ namespace BicycleCompany.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f2b"),
+                            Id = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f20"),
                             Name = "John Doe"
                         },
                         new
                         {
-                            Id = new Guid("b59b88ea-c5b9-4194-afb5-1435edd7c744"),
+                            Id = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f21"),
                             Name = "Andrew Vertuha"
                         });
                 });
@@ -101,24 +103,50 @@ namespace BicycleCompany.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name");
+
                     b.ToTable("Parts");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8cc08fcb-1fdb-4353-8540-dde0b1fcce5b"),
+                            Id = new Guid("8cc08fcb-1fdb-4353-8540-dde0b1fcce50"),
                             Name = "Seat"
                         },
                         new
                         {
-                            Id = new Guid("cee8b2e4-1ff8-4a6c-a860-6e1ec2984437"),
+                            Id = new Guid("8cc08fcb-1fdb-4353-8540-dde0b1fcce51"),
                             Name = "Wheel"
                         },
                         new
                         {
-                            Id = new Guid("81c0168b-9617-4a6b-975c-5a3da307440a"),
+                            Id = new Guid("8cc08fcb-1fdb-4353-8540-dde0b1fcce52"),
                             Name = "Handlebar"
                         });
+                });
+
+            modelBuilder.Entity("BicycleCompany.DAL.Models.PartDetails", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PartId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProblemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.HasIndex("ProblemId");
+
+                    b.ToTable("PartDetails");
                 });
 
             modelBuilder.Entity("BicycleCompany.DAL.Models.Problem", b =>
@@ -142,10 +170,11 @@ namespace BicycleCompany.DAL.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Stage")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<DateTime>("ReceivingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Stage")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -158,28 +187,97 @@ namespace BicycleCompany.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f451e4eb-c5fc-4ff4-a751-57eee391f9a7"),
-                            BicycleId = new Guid("0ea19dcd-17ff-4284-bf9d-d9ccf7c15fd6"),
-                            ClientId = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f2b"),
+                            Id = new Guid("f451e4eb-c5fc-4ff4-a751-57eee391f9a0"),
+                            BicycleId = new Guid("0ea19dcd-17ff-4284-bf9d-d9ccf7c15fd0"),
+                            ClientId = new Guid("3b4e22be-c10d-4303-bf57-03eca2f13f20"),
                             Description = "The seat was broken in half",
                             Place = "Outside the city",
-                            Stage = "Received"
+                            ReceivingDate = new DateTime(2021, 8, 9, 12, 52, 19, 31, DateTimeKind.Local).AddTicks(4771),
+                            Stage = 0
                         });
                 });
 
-            modelBuilder.Entity("PartProblem", b =>
+            modelBuilder.Entity("BicycleCompany.DAL.Models.User", b =>
                 {
-                    b.Property<Guid>("PartsId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProblemsId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.HasKey("PartsId", "ProblemsId");
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(44)
+                        .HasColumnType("nvarchar(44)");
 
-                    b.HasIndex("ProblemsId");
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("PartProblem");
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Login");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48640"),
+                            Login = "Admin",
+                            Password = "7aekCVlgVr2mHBSiG7j4oYFRcuVvuQpsx/LGoBEn+WY=",
+                            Role = "Administrator",
+                            Salt = "U+c7ldHlOzDGQwkVtbo4rQ=="
+                        },
+                        new
+                        {
+                            Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48641"),
+                            Login = "User",
+                            Password = "Ugu85msDktPCb+4dq2eH9178FcPJPiJ1GoZDuVKvdI8=",
+                            Salt = "UZ87zCZbv7Xn1nh7n1riYQ=="
+                        },
+                        new
+                        {
+                            Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48642"),
+                            Login = "Master",
+                            Password = "Bf/97pp16vaCipEI2w/LM1P1XcP7WKVmSIT9XmpnbOo=",
+                            Role = "Master",
+                            Salt = "N1UVkH2kwLrs6aoEADLuGg=="
+                        },
+                        new
+                        {
+                            Id = new Guid("677f9e56-7ccb-4cbf-bb46-1c38a0d48643"),
+                            Login = "Manager",
+                            Password = "wjPHtXpNvhueKzcqH+dgfLG1Lfi/EpuYqARC/p9T25c=",
+                            Role = "Manager",
+                            Salt = "vm8TTiETaZAroOITxE6yJw=="
+                        });
+                });
+
+            modelBuilder.Entity("BicycleCompany.DAL.Models.PartDetails", b =>
+                {
+                    b.HasOne("BicycleCompany.DAL.Models.Part", "Part")
+                        .WithMany("PartDetails")
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BicycleCompany.DAL.Models.Problem", "Problem")
+                        .WithMany("PartDetails")
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+
+                    b.Navigation("Problem");
                 });
 
             modelBuilder.Entity("BicycleCompany.DAL.Models.Problem", b =>
@@ -201,21 +299,6 @@ namespace BicycleCompany.DAL.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("PartProblem", b =>
-                {
-                    b.HasOne("BicycleCompany.DAL.Models.Part", null)
-                        .WithMany()
-                        .HasForeignKey("PartsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BicycleCompany.DAL.Models.Problem", null)
-                        .WithMany()
-                        .HasForeignKey("ProblemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BicycleCompany.DAL.Models.Bicycle", b =>
                 {
                     b.Navigation("Problems");
@@ -224,6 +307,16 @@ namespace BicycleCompany.DAL.Migrations
             modelBuilder.Entity("BicycleCompany.DAL.Models.Client", b =>
                 {
                     b.Navigation("Problems");
+                });
+
+            modelBuilder.Entity("BicycleCompany.DAL.Models.Part", b =>
+                {
+                    b.Navigation("PartDetails");
+                });
+
+            modelBuilder.Entity("BicycleCompany.DAL.Models.Problem", b =>
+                {
+                    b.Navigation("PartDetails");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,9 +1,9 @@
 ﻿using BicycleCompany.DAL.Contracts;
 using BicycleCompany.DAL.Models;
+using BicycleCompany.DAL.Repository.Extensions;
+using BicycleCompany.Models.Request.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BicycleCompany.DAL.Repository
@@ -20,12 +20,22 @@ namespace BicycleCompany.DAL.Repository
 
         public Task DeletePartAsync(Part part) => DeleteAsync(part);
 
-        public async Task<Part> GetPartAsync(Guid id, bool trackChanges) => 
-            await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
+        public Task UpdatePartAsync(Part part) => UpdateAsync(part);
 
-        public async Task<IEnumerable<Part>> GetPartsAsync(bool trackChanges) => 
-            await FindAll(trackChanges)
-            .OrderBy(p => p.Name)
-            .ToListAsync();
+        public async Task<Part> GetPartAsync(Guid id) => 
+            await FindByCondition(p => p.Id.Equals(id)).SingleOrDefaultAsync();
+
+        public async Task<PagedList<Part>> GetPartsAsync(PartParameters partParameters)
+        {
+            var parts = await FindAll()
+                .Search(partParameters.SearchTerm)
+                .Sort(partParameters.OrderBy)
+                .ToListAsync();
+
+            return PagedList<Part>.ToPagedList(parts, partParameters.PageNumber, partParameters.PageSize);
+        }
+
+        public async Task<Part> GetPartByNameAsync(string name) => 
+            await FindByCondition(p => p.Name.Equals(name)).SingleOrDefaultAsync();
     }
 }

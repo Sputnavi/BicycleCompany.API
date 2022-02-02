@@ -1,9 +1,15 @@
 using BicycleCompany.BLL.Extensions;
+using BicycleCompany.BLL.Services;
+using BicycleCompany.BLL.Services.Contracts;
+using BicycleCompany.BLL.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NLog;
+using System.IO;
 
 namespace BicycleCompany.BLL
 {
@@ -11,6 +17,7 @@ namespace BicycleCompany.BLL
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -19,32 +26,49 @@ namespace BicycleCompany.BLL
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureSqlContext(Configuration);
+            services.ConfigureLoggerService();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.RegisterRepositories();
+            services.RegisterServices();
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<IPasswordManager, PasswordManager>();
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+            services.ConfigureJwt(Configuration);
             services.AddRazorPages();
+            services.AddControllers()
+                .AddNewtonsoftJson();
+            services.ConfigureSwagger();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.EnvironmentName == "Docker")
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BicycleCompany v1"));
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
+            app.UseMiddleware<ExceptionHandler>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=index}/{id?}");
             });
         }
     }
